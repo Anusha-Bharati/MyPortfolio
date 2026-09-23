@@ -1,4 +1,10 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild
+} from '@angular/core';
+
 import { ExperienceItem } from '../../../models/PortfolioContent';
 import { ContentService } from '../../../services/contentService.service';
 import { GoogleAnalytics } from '../../../services/googleAnalytics.service';
@@ -9,10 +15,13 @@ import { GoogleAnalytics } from '../../../services/googleAnalytics.service';
   styleUrl: './experience.component.scss'
 })
 export class ExperienceComponent implements OnInit {
+
   title = 'Experience';
+
   experience: ExperienceItem[] = [];
 
-  @ViewChild('experienceTrack') experienceTrack?: ElementRef<HTMLElement>;
+  @ViewChild('experienceTrack')
+  experienceTrack?: ElementRef<HTMLElement>;
 
   constructor(
     private readonly contentService: ContentService,
@@ -20,13 +29,47 @@ export class ExperienceComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.contentService.getContent().subscribe(content => {
-      this.title = content.experience.title;
-      this.experience = content.experience.items;
-    });
+    this.contentService
+      .getContent()
+      .subscribe(content => {
+
+        this.title = content.experience.title;
+        this.experience = content.experience.items;
+
+      });
   }
 
   scroll(direction: number): void {
-    this.experienceTrack?.nativeElement.scrollBy({ left: direction * 620, behavior: 'smooth' });
+    const track =
+      this.experienceTrack?.nativeElement;
+
+    if (!track) {
+      return;
+    }
+
+    this.scrollOneCard(track, direction);
+  }
+
+  private scrollOneCard(
+    track: HTMLElement,
+    direction: number
+  ): void {
+
+    const card =
+      track.querySelector<HTMLElement>('.content-card');
+
+    if (!card) {
+      return;
+    }
+
+    const styles = window.getComputedStyle(track);
+
+    const gap =
+      parseFloat(styles.columnGap || styles.gap || '16');
+
+    track.scrollBy({
+      left: direction * (card.offsetWidth + gap),
+      behavior: 'smooth'
+    });
   }
 }

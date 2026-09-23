@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  angular-app:
+    build: .
+    ports:
+      - "4200:4200"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true # Helps ensure hot-reload triggers correctly in Docker containers

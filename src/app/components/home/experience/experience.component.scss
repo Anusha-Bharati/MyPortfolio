@@ -16,3 +16,32 @@ li { margin-bottom: .65rem; line-height: 1.55; }
 .scroll-controls button { width: 42px; height: 42px; border-radius: 50%; border: 1px solid $LightestNavy; color: $Green; background: $LightNavy; font-size: 1.2rem; cursor: pointer; }
 .scroll-controls button:hover, .scroll-controls button:focus-visible { border-color: $Green; outline: none; }
 @media (max-width: 600px) { .experience-card { flex-basis: 90vw; min-height: auto; } .scroll-controls { display: none; } }
+.experience-media {
+    padding: 1.4rem;
+  
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  
+    background:
+      radial-gradient(
+        circle at 80% 20%,
+        rgba(100,255,218,.12),
+        transparent 40%
+      ),
+      #071629;
+  }
+  
+  .experience-number,
+  .experience-date {
+    font-family: $CodeFont;
+    color: $Green;
+    font-size: .72rem;
+  }
+  
+  .experience-media h4 {
+    margin: .5rem 0 0;
+  
+    color: $White;
+    font-size: 1.5rem;
+  }

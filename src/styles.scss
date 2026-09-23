@@ -1,130 +1,481 @@
-/* You can add global styles to this file, and also import other style files */
+/* ================================
+   GLOBAL THEME
+================================ */
+
 @import "./app/custom.scss";
 
-.card {
-    background: var(--surface-card);
-    padding: 2rem;
-    border-radius: 10px;
-    margin-bottom: 1rem;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
-html{
-    background: #0a192f;
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 84px;
+
+  background: $Navy;
 }
-.section{
-background: #0a192f;
+
+body {
+  margin: 0;
+
+  background: $Navy;
+  color: $LightestSlate;
+
+  font-family: $MainFont;
+
+  overflow-x: hidden;
 }
+
+app-root {
+  display: block;
+  min-height: 100vh;
+
+  background: $Navy;
+}
+
+.section,
+.section-box,
+.projects-section,
+.experience-section {
+  background: transparent;
+}
+
+
+/* ================================
+   ACCESSIBILITY
+================================ */
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:focus-visible {
+  outline: 2px solid $Green;
+  outline-offset: 3px;
+}
+
+
+/* ================================
+   SECTION LAYOUT
+================================ */
+
 .section-box {
-    padding: 85px 0;
-  }
+  padding: 80px 0;
+}
 
-  .section-title {
-    position: relative;
-    display: flex;
-    align-items: center;
-    width: 100%;
-    white-space: nowrap;
-    margin: 0 0 28px;
-    font-size: 26px;
-    font-weight: 600;
-    color: $LightestSlate;
-    font-family: $MainFont;
+.section-title {
+  position: relative;
 
-   .n-section-title {
-    margin-right: 10px;
-    font-family: $CodeFont;
-    font-weight: normal;
-    color: $Green;
-    font-size: 16px;
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+
+  margin: 0 0 26px;
+
+  white-space: nowrap;
+
+  color: $LightestSlate;
+
+  font-family: $MainFont;
+  font-size: 25px;
+  font-weight: 600;
+
+  .n-section-title {
     position: relative;
     bottom: 2px;
+
+    margin-right: 10px;
+
+    color: $Green;
+
+    font-family: $CodeFont;
+    font-size: 15px;
+    font-weight: normal;
   }
 
-  &:after {
+  &::after {
     content: "";
+
     display: block;
+
     width: min(220px, 28vw);
     height: 1px;
+
     margin-left: 18px;
-    background-color: $LightestNavy;
+
+    background: $LightestNavy;
   }
 }
-@media (max-width: 768px) {
-  .section-box {
-    padding: 65px 0;
-  }
 
-  .section-title {
-    font-size: 22px;
+.section-heading-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
 
-    .n-section-title {
-      font-size: 14px;
-    }
+  gap: 2rem;
 
-    &:after {
-      width: 100px;
-      margin-left: 12px;
-    }
-  }
+  margin-bottom: 1rem;
 }
-.underline {
+
+
+/* ================================
+   LINKS
+================================ */
+
+a {
+  text-decoration: none;
+
+  transition: color .2s ease;
+
+  &:hover {
+    color: $Green;
     text-decoration: none;
-    display: inline-block;
-    position: relative;
-    color: #64ffda !important;
   }
-  .underline:after {
-    background: none repeat scroll 0 0 transparent;
-    bottom: 3px;
+}
+
+.underline {
+  position: relative;
+
+  display: inline-block;
+
+  color: $Green !important;
+
+  text-decoration: none;
+
+  &::after {
     content: "";
-    display: block;
-    height: 1px;
-    left: 50%;
+
     position: absolute;
-    background: #64ffda;
-    transition: width 0.3s ease 0s, left 0.3s ease 0s;
-    width: 0%;
+    bottom: 3px;
+    left: 50%;
+
+    width: 0;
+    height: 1px;
+
+    background: $Green;
+
+    transition:
+      width .3s ease,
+      left .3s ease;
   }
-  .underline:hover:after {
+
+  &:hover::after {
     width: 100%;
     left: 0;
   }
-  a {
-    text-decoration: none;
-  
-    &:hover {
-      text-decoration: none;
-      color: #64ffda;
+}
+
+
+/* ================================
+   BUTTONS
+================================ */
+
+.main-btn {
+  padding: 1rem 1.4rem;
+
+  border: 1px solid $Green;
+  border-radius: 5px;
+
+  background: transparent;
+
+  color: $Green;
+
+  font-family: $CodeFont;
+  font-size: 13px;
+
+  cursor: pointer;
+
+  transition:
+    background-color .25s ease,
+    transform .25s ease;
+
+  &:hover,
+  &:focus-visible {
+    background: rgba(100, 230, 202, .08);
+  }
+}
+
+
+/* ================================
+   HORIZONTAL CONTENT RAIL
+================================ */
+
+.content-rail {
+  display: flex;
+
+  gap: 1.15rem;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  padding: .5rem 4vw 1.5rem;
+
+  scroll-behavior: smooth;
+  scroll-snap-type: x proximity;
+
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+
+  scrollbar-width: thin;
+  scrollbar-color: $LightestNavy transparent;
+}
+
+.content-rail::-webkit-scrollbar {
+  height: 6px;
+}
+
+.content-rail::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.content-rail::-webkit-scrollbar-thumb {
+  background: $LightestNavy;
+  border-radius: 20px;
+}
+
+
+/* ================================
+   SHARED PROJECT / EXPERIENCE CARD
+================================ */
+
+.content-card {
+  flex: 0 0 clamp(330px, 38vw, 470px);
+
+  min-height: 430px;
+
+  padding: 1.5rem;
+
+  scroll-snap-align: start;
+
+  display: flex;
+  flex-direction: column;
+
+  background: $LightNavy;
+
+  border: 1px solid rgba(100, 230, 202, .1);
+  border-radius: 14px;
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, .16);
+
+  transition:
+    transform .3s cubic-bezier(.2, .8, .2, 1),
+    border-color .3s ease,
+    box-shadow .3s ease;
+}
+
+.content-card:hover {
+  transform: translateY(-4px);
+
+  border-color: rgba(100, 230, 202, .3);
+
+  box-shadow:
+    0 16px 36px rgba(0, 0, 0, .23);
+}
+
+
+/* ================================
+   CARD TYPOGRAPHY
+================================ */
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 1rem;
+
+  margin-bottom: .8rem;
+}
+
+.card-index,
+.card-type,
+.card-date {
+  color: $Green;
+
+  font-family: $CodeFont;
+  font-size: .72rem;
+}
+
+.content-card h4 {
+  margin: 0 0 .35rem;
+
+  color: $White;
+
+  font-size: 1.25rem;
+  line-height: 1.3;
+}
+
+.company {
+  display: inline-block;
+
+  margin-bottom: .9rem;
+
+  color: $Green;
+
+  font-family: $CodeFont;
+  font-size: .82rem;
+
+  text-decoration: none;
+}
+
+.summary,
+.problem {
+  color: $LightSlate;
+
+  font-size: .88rem;
+  line-height: 1.6;
+}
+
+.problem {
+  color: $Slate;
+  font-style: italic;
+}
+
+
+/* ================================
+   BULLETS
+================================ */
+
+.highlights {
+  margin: .8rem 0 1rem;
+  padding-left: 1.1rem;
+
+  color: $LightSlate;
+
+  font-size: .82rem;
+  line-height: 1.5;
+}
+
+.highlights li {
+  margin-bottom: .45rem;
+}
+
+
+/* ================================
+   TECHNOLOGY CHIPS
+================================ */
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: .4rem;
+
+  margin-top: auto;
+  padding-top: .75rem;
+}
+
+.chips span {
+  padding: .28rem .5rem;
+
+  border: 1px solid $LightestNavy;
+  border-radius: 999px;
+
+  color: $Green;
+
+  font-family: $CodeFont;
+  font-size: .65rem;
+}
+
+
+/* ================================
+   GENERIC CARD
+================================ */
+
+.card {
+  padding: 2rem;
+
+  margin-bottom: 1rem;
+
+  background: $LightNavy;
+
+  border-radius: 10px;
+}
+
+
+/* ================================
+   TABLET
+================================ */
+
+@media (max-width: 1100px) {
+
+  .content-card {
+    flex-basis: 44vw;
+  }
+
+}
+
+
+/* ================================
+   MOBILE
+================================ */
+
+@media (max-width: 768px) {
+
+  .section-box {
+    padding: 60px 0;
+  }
+
+  .section-title {
+    font-size: 21px;
+
+    .n-section-title {
+      font-size: 13px;
+    }
+
+    &::after {
+      width: 80px;
+      margin-left: 12px;
     }
   }
 
-  .main-btn {
-    color: white;
-    background-color: transparent;
-    border: 1px solid white;;
-    border-radius: 3px;
-    font-size: 13px;
-    font-family: $CodeFont;
-    line-height: 1;
-    -webkit-text-decoration: none;
-    text-decoration: none;
-    cursor: pointer;
-    -webkit-transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
-    transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
-    padding: 1.25rem 1.75rem;
-  
-    &:hover,
-    &:focus,
-    &:active {
-      background-color: rgba(100, 255, 218, 0.07);
-      outline: none;
-    }
+  .section-heading-row {
+    align-items: center;
+    gap: 1rem;
   }
-html { scroll-behavior: smooth; scroll-padding-top: 84px; }
-body { margin: 0; background: $Navy; color: $LightestSlate; font-family: $MainFont; overflow-x: hidden; }
-* { box-sizing: border-box; }
-button, a { -webkit-tap-highlight-color: transparent; }
-:focus-visible { outline: 2px solid $Green; outline-offset: 3px; }
+
+  .content-rail {
+    gap: .8rem;
+
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .content-card {
+    flex: 0 0 88vw;
+
+    min-height: auto;
+
+    padding: 1.2rem;
+  }
+
+}
+
+
+/* ================================
+   REDUCED MOTION
+================================ */
+
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+
+    transition-duration: .01ms !important;
+
+    scroll-behavior: auto !important;
+  }
+
 }
