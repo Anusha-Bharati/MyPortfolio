@@ -1,0 +1,18 @@
+<section class="section contact-section" id="contact" *ngIf="contact as c">
+    <div class="container">
+      <div class="section-box contact-shell">
+        <p class="contact-kicker">05. What's next?</p>
+        <h3>{{ c.title }}</h3>
+        <p>{{ c.message }}</p>
+  
+        <a class="main-btn" [href]="'mailto:' + c.email">{{ c.email }}</a>
+  
+        <nav class="social-links" aria-label="Social links">
+          <a *ngFor="let link of c.links" [class.hidden]="!link.visible" [href]="link.url" target="_blank" rel="noopener noreferrer">
+            {{ link.label }} ↗
+          </a>
+        </nav>
+      </div>
+    </div>
+  </section>
+  

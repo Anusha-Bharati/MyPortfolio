@@ -1,0 +1,26 @@
+<section class="section about" id="about" *ngIf="about as a">
+    <div class="container">
+      <div class="section-box">
+        <h3 class="section-title"><span class="n-section-title">01. {{ a.title }}</span></h3>
+  
+        <div class="about-grid">
+          <div class="about-copy" data-aos="fade-up">
+            <p *ngFor="let paragraph of a.paragraphs">{{ paragraph }}</p>
+  
+            <div class="skill-groups" *ngIf="skills as skillData">
+              <article class="skill-group" *ngFor="let group of skillData.groups">
+                <h4>{{ group.label }}</h4>
+                <div class="skill-chips">
+                  <span *ngFor="let skill of group.items">{{ skill }}</span>
+                </div>
+              </article>
+            </div>
+          </div>
+  
+          <figure class="portrait" data-aos="fade-left">
+            <img [src]="a.image" [alt]="'Portrait of Anusha Bharati'" loading="lazy" />
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>

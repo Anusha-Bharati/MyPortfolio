@@ -1,0 +1,55 @@
+@import "./../../../custom.scss";
+
+.banner {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+.hero-shell {
+  max-width: 980px;
+  padding: 140px 0 90px;
+}
+
+.eyebrow {
+  color: $Green;
+  font-family: $CodeFont;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+h1, h2 { margin: 0; font-family: $MainFont; font-weight: 700; }
+h1 {
+    color: $White;
+    font-size: clamp(2.6rem, 6vw, 5rem);
+    line-height: 1;
+  }
+  
+  h2 {
+    color: $Slate;
+    font-size: clamp(1.5rem, 3vw, 2.7rem);
+    margin-top: .75rem;
+  }
+
+.hero-summary {
+  color: $LightSlate;
+  max-width: 720px;
+  font-size: 1.08rem;
+  line-height: 1.8;
+  margin: 2rem 0;
+}
+
+.highlight-row { display: flex; flex-wrap: wrap; gap: .75rem; margin-bottom: 2.2rem; }
+.highlight-row span {
+  border: 1px solid rgba(100, 255, 218, .35);
+  background: rgba(100, 255, 218, .05);
+  color: $LightSlate;
+  border-radius: 999px;
+  padding: .55rem .85rem;
+  font-family: $CodeFont;
+  font-size: .78rem;
+}
+
+.hero-actions { display: flex; flex-wrap: wrap; gap: 1rem; }
+.main-btn.primary { color: $Navy; background: $Green; border-color: $Green; }
+.main-btn.primary:hover { background: transparent; color: $Green; }

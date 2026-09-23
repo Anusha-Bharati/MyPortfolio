@@ -1,0 +1,51 @@
+@import "./../../../custom.scss";
+
+.section-heading-row { max-width: 1140px; margin: 0 auto 1.5rem; padding: 0 1rem; display: flex; justify-content: space-between; align-items: end; gap: 1rem; }
+.section-subtitle { color: $Slate; max-width: 650px; margin: .5rem 0 0; }
+.horizontal-track {
+    display: flex;
+    gap: 1.25rem;
+    overflow-x: auto;
+  
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scroll-padding-inline: 6vw;
+    overscroll-behavior-x: contain;
+  
+    padding: 1rem 6vw 2rem;
+  }
+  
+  .project-card {
+    flex: 0 0 clamp(560px, 62vw, 780px);
+    min-height: 420px;
+  
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+  
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  
+    border-radius: 18px;
+  }
+  .project-card.reverse .visual { order: 2; }
+.visual { min-height: 100%; background: #071426; overflow: hidden; }
+.visual img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
+.project-card:hover .visual img { transform: scale(1.025); }
+.project-placeholder { height: 100%; min-height: 560px; padding: 2rem; display: flex; flex-direction: column; justify-content: flex-end; background: radial-gradient(circle at 25% 20%, rgba(100,255,218,.22), transparent 38%), linear-gradient(135deg, #112240, #071426); }
+.project-placeholder span { color: $Green; font-family: $CodeFont; font-size: .8rem; }
+.project-placeholder strong { color: $White; font-size: clamp(2rem,4vw,4rem); line-height: 1; margin-top: .75rem; }
+.project-copy { padding: clamp(1.5rem,4vw,3rem); display: flex; flex-direction: column; justify-content: center; }
+.project-meta { display: flex; justify-content: space-between; gap: 1rem; color: $Green; text-transform: uppercase; font-family: $CodeFont; font-size: .7rem; }
+h4 { color: $White; font-size: clamp(1.8rem,3vw,2.8rem); margin: 1rem 0; }
+p, li, small { color: $Slate; line-height: 1.65; }
+.problem { color: $LightSlate; font-weight: 600; }
+ul { padding-left: 1.2rem; }
+.chips { display: flex; flex-wrap: wrap; gap: .45rem; margin: 1rem 0; }
+.chips span { color: $Green; background: rgba(100,255,218,.06); border-radius: 999px; padding: .4rem .6rem; font-family: $CodeFont; font-size: .7rem; }
+.project-links { display: flex; gap: 1rem; margin-top: .5rem; }
+.project-links a { color: $Green; font-family: $CodeFont; }
+.scroll-controls { display: flex; gap: .5rem; }
+.scroll-controls button { width: 42px; height: 42px; border-radius: 50%; border: 1px solid $LightestNavy; color: $Green; background: $LightNavy; cursor: pointer; }
+.scroll-controls button:hover, .scroll-controls button:focus-visible { border-color: $Green; outline: none; }
+@media (max-width: 850px) { .project-card { grid-template-columns: 1fr; flex-basis: 90vw; } .project-card.reverse .visual { order: initial; } .project-placeholder { min-height: 300px; } .visual { min-height: 300px; } }
+@media (max-width: 600px) { .scroll-controls { display: none; } }

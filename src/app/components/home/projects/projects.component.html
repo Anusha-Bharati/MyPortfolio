@@ -1,0 +1,48 @@
+<section class="section projects-section" id="projects">
+  <div class="container-fluid section-box">
+    <div class="section-heading-row">
+      <div>
+        <h3 class="section-title"><span class="n-section-title">03. {{ title }}</span></h3>
+        <p class="section-subtitle">{{ subtitle }}</p>
+      </div>
+      <div class="scroll-controls" aria-label="Project navigation">
+        <button type="button" (click)="scroll(-1)" aria-label="Previous project">←</button>
+        <button type="button" (click)="scroll(1)" aria-label="Next project">→</button>
+      </div>
+    </div>
+
+    <div class="horizontal-track" #projectTrack tabindex="0" aria-label="Selected projects">
+      <article class="project-card" *ngFor="let project of projects; let i = index" [class.reverse]="i % 2 === 1">
+        <div class="visual">
+          <img *ngIf="project.image; else projectPlaceholder" [src]="project.image" [alt]="project.title" loading="lazy" />
+          <ng-template #projectPlaceholder>
+            <div class="project-placeholder">
+              <span>{{ project.type }}</span>
+              <strong>{{ project.title }}</strong>
+            </div>
+          </ng-template>
+        </div>
+
+        <div class="project-copy">
+          <div class="project-meta"><span>{{ project.type }}</span><span>{{ project.status }}</span></div>
+          <h4>{{ project.title }}</h4>
+          <p class="problem">{{ project.problem }}</p>
+          <p>{{ project.summary }}</p>
+
+          <ul>
+            <li *ngFor="let highlight of project.highlights">{{ highlight }}</li>
+          </ul>
+
+          <div class="chips"><span *ngFor="let tech of project.technologies">{{ tech }}</span></div>
+
+          <div class="project-links" *ngIf="project.githubUrl || project.demoUrl">
+            <a *ngIf="project.githubUrl" [href]="project.githubUrl" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+            <a *ngIf="project.demoUrl" [href]="project.demoUrl" target="_blank" rel="noopener noreferrer">Live demo ↗</a>
+          </div>
+
+          <small *ngIf="project.confidentialityNote">{{ project.confidentialityNote }}</small>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,33 @@
+<section class="section experience-section" id="experience">
+    <div class="container-fluid section-box">
+      <div class="section-heading-row">
+        <h3 class="section-title"><span class="n-section-title">02. {{ title }}</span></h3>
+        <div class="scroll-controls" aria-label="Experience navigation">
+          <button type="button" (click)="scroll(-1)" aria-label="Previous experience">←</button>
+          <button type="button" (click)="scroll(1)" aria-label="Next experience">→</button>
+        </div>
+      </div>
+  
+      <div class="horizontal-track" #experienceTrack tabindex="0" aria-label="Professional experience">
+        <article class="experience-card" *ngFor="let item of experience; let i = index">
+          <div class="experience-topline">
+            <span class="index">0{{ i + 1 }}</span>
+            <span class="date">{{ item.dateLabel }}</span>
+          </div>
+  
+          <h4>{{ item.role }}</h4>
+          <a *ngIf="item.companyUrl; else companyText" [href]="item.companyUrl" target="_blank" rel="noopener noreferrer" class="company">
+            {{ item.company }} ↗
+          </a>
+          <ng-template #companyText><span class="company">{{ item.company }}</span></ng-template>
+  
+          <p>{{ item.summary }}</p>
+          <ul>
+            <li *ngFor="let highlight of item.highlights">{{ highlight }}</li>
+          </ul>
+          <div class="chips"><span *ngFor="let tech of item.technologies">{{ tech }}</span></div>
+        </article>
+      </div>
+    </div>
+  </section>
+  

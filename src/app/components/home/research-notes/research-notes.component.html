@@ -1,0 +1,25 @@
+<section class="section notes-section" id="research-notes">
+  <div class="container-fluid section-box">
+    <div class="section-heading-row">
+      <div>
+        <h3 class="section-title"><span class="n-section-title">04. {{ title }}</span></h3>
+        <p>{{ subtitle }}</p>
+      </div>
+      <div class="scroll-controls" aria-label="Research note navigation">
+        <button type="button" (click)="scroll(-1)" aria-label="Previous note">←</button>
+        <button type="button" (click)="scroll(1)" aria-label="Next note">→</button>
+      </div>
+    </div>
+
+    <div class="note-track" #noteTrack tabindex="0" aria-label="Research notes">
+      <article class="note-card" *ngFor="let note of notes">
+        <div class="note-meta"><span>{{ note.category }}</span><span>{{ note.status }}</span></div>
+        <h4>{{ note.title }}</h4>
+        <p>{{ note.excerpt }}</p>
+        <div class="tags"><span *ngFor="let tag of note.tags">{{ tag }}</span></div>
+        <a *ngIf="note.status === 'published'" [href]="getNoteUrl(note)" target="_blank" rel="noopener noreferrer">Read note ↗</a>
+        <span *ngIf="note.status === 'draft'" class="draft-label">Draft in progress</span>
+      </article>
+    </div>
+  </div>
+</section>

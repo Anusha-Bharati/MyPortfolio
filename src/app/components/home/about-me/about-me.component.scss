@@ -1,0 +1,101 @@
+@import "./../../../custom.scss";
+
+.about-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(220px, .5fr);
+    gap: 3rem;
+    align-items: start;
+  }
+  
+  .about-copy {
+    max-width: 720px;
+  }
+  
+  .about-copy p {
+    color: $LightSlate;
+    line-height: 1.7;
+    font-size: .95rem;
+    margin-bottom: .9rem;
+  }
+  
+  .portrait {
+    position: sticky;
+    top: 100px;
+    margin: 0;
+  }
+  
+  .portrait img {
+    width: 100%;
+    max-width: 290px;
+  
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  
+    border-radius: 14px;
+  
+    filter: saturate(.85);
+  
+    box-shadow:
+      12px 12px 0 rgba(100, 255, 218, .12);
+  }
+  
+  .skill-groups {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .75rem;
+  
+    margin-top: 1.5rem;
+  }
+  
+  .skill-group {
+    background: $LightNavy;
+  
+    padding: .85rem;
+  
+    border-radius: 10px;
+  }
+  
+  .skill-group h4 {
+    color: $White;
+    font-size: .85rem;
+    margin-bottom: .6rem;
+  }
+  
+  .skill-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+  }
+  
+  .skill-chips span {
+    color: $Green;
+    font-family: $CodeFont;
+    font-size: .68rem;
+  
+    border: 1px solid $LightestNavy;
+    border-radius: 999px;
+  
+    padding: .3rem .5rem;
+  }
+  
+  @media (max-width: 900px) {
+    .about-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  
+    .portrait {
+      position: static;
+      order: -1;
+    }
+  
+    .portrait img {
+      max-width: 240px;
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .skill-groups {
+      grid-template-columns: 1fr;
+    }
+  }

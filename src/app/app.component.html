@@ -1,0 +1,28 @@
+<header class="main-navbar" *ngIf="site as s">
+  <button type="button" class="brand" (click)="scrollIntoView('home')" aria-label="Go to top">
+    <img [src]="s.logo" [alt]="s.name + ' logo'" width="40" height="40" />
+  </button>
+
+  <button type="button" class="menu-toggle" (click)="navOpen = !navOpen" [attr.aria-expanded]="navOpen" aria-label="Toggle navigation">☰</button>
+
+  <nav [class.open]="navOpen" aria-label="Main navigation">
+    <button *ngFor="let item of navigation" type="button" class="nav-link" (click)="scrollIntoView(item.sectionId)">
+      {{ item.label }}
+    </button>
+    <button type="button" class="cv-btn" (click)="downloadCV()">Resume</button>
+  </nav>
+</header>
+
+<main>
+  <app-banner></app-banner>
+  <app-about-me></app-about-me>
+  <app-experience></app-experience>
+  <app-projects></app-projects>
+  <app-research-notes></app-research-notes>
+  <app-contact></app-contact>
+</main>
+
+<footer class="site-footer" *ngIf="footer as f">
+  <a [href]="f.repositoryUrl" target="_blank" rel="noopener noreferrer">{{ f.text }}</a>
+  <span>{{ f.designCredit }}</span>
+</footer>

@@ -1,0 +1,24 @@
+<section class="section banner" id="home" *ngIf="hero as h">
+    <div class="container">
+      <div class="hero-shell">
+        <p class="eyebrow" data-aos="fade-up">{{ h.eyebrow }}</p>
+        <h1 data-aos="fade-up" data-aos-delay="80">{{ h.name }}</h1>
+        <h2 data-aos="fade-up" data-aos-delay="140">{{ h.headline }}</h2>
+        <p class="hero-summary" data-aos="fade-up" data-aos-delay="200">{{ h.summary }}</p>
+  
+        <div class="highlight-row" data-aos="fade-up" data-aos-delay="260">
+          <span *ngFor="let item of h.highlights">{{ item }}</span>
+        </div>
+  
+        <div class="hero-actions" data-aos="fade-up" data-aos-delay="320">
+          <button type="button" class="main-btn primary" (click)="scrollTo(h.primaryAction.target)">
+            {{ h.primaryAction.label }}
+          </button>
+          <button type="button" class="main-btn" (click)="scrollTo(h.secondaryAction.target)">
+            {{ h.secondaryAction.label }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+  

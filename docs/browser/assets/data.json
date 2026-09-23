@@ -1,0 +1,31 @@
+[{
+    "AboutMe": "About Me",
+    "Experience" : "Experience",
+    "Projects" : "Projects",
+    "Contact" : "Contact",
+    "Resume" : "Resume",
+    "cvName": "cv.pdf"
+},
+{
+    "Pretitle": "Hello! My name is",
+    "AboutMeDescr": "I have 4 years of experience</span>",
+    "ActionBtn": "Get in touch"
+},{
+    "Title": "About me",
+    "AboutMeDescr2": [
+        "Software Engineer with 4 years of expertise in crafting scalable applications using Angular, TypeScript, Python, JavaScript, ASP.NET, and MS-SQL. Adept at optimising user experience, application performance, and collaborating seamlessly with cross- functional teams to deliver high-caliber software solutions. Excels in translating intricate business requirements into technical specifications while consistently achieving project goals and elevating customer satisfaction. A champion of innovative thinking, continually challenging boundaries and striving for excellence in every endeavour. Committed to pushing the limits of software engineering through a relentless pursuit of knowledge and cutting- edge practices."
+    ]
+},
+{
+    "ExpTitle": "Experience",
+    "Jobs": [
+        {
+            "Title": "Software developer",
+            "Date": "Dec 2022- Present",
+            "Description": [
+                "Spearheaded development of cutting-edge billing portal, accounting application designed to automate and streamline invoices, fixed charges and tariffs processing.",
+                " Revamped billing portal by refactoring legacy code, leveraging modern design and optimisation techniques for elevated user experience by enhancing product value, delivering intuitive, highly responsive portal tailored to target audience needs and complex business logic requirements"
+            ]
+      }]
+}
+]

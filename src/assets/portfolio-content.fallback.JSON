@@ -1,0 +1,268 @@
+{
+    "site": {
+      "name": "Anusha Bharati",
+      "title": "Software Engineer | Data & Machine Learning",
+      "description": "Software Engineer with 7+ years of experience building enterprise applications and data-intensive systems, currently expanding into applied data science and machine learning.",
+      "resumeUrl": "https://raw.githubusercontent.com/Anusha-Bharati/AB-portfolio-content/main/assets/Anusha_Bharati_CV.pdf",
+      "profileImage": "https://raw.githubusercontent.com/Anusha-Bharati/AB-portfolio-content/main/assets/anusha.jpg",
+      "logo": "assets/logo2.png"
+    },
+    "navigation": [
+      { "id": "about", "label": "About Me", "sectionId": "about", "order": 1, "visible": true },
+      { "id": "experience", "label": "Experience", "sectionId": "experience", "order": 2, "visible": true },
+      { "id": "projects", "label": "Projects", "sectionId": "projects", "order": 3, "visible": true },
+      { "id": "research-notes", "label": "Research Notes", "sectionId": "research-notes", "order": 4, "visible": true },
+      { "id": "contact", "label": "Contact", "sectionId": "contact", "order": 5, "visible": true }
+    ],
+    "hero": {
+      "eyebrow": "Hello! Welcome, I am",
+      "name": "Anusha Bharati",
+      "headline": "Software Engineer | Data & Machine Learning",
+      "summary": "I build reliable software and data-driven systems to solve complex problems. My background spans enterprise web applications, APIs, financial platforms and data analysis, and I am currently developing hands-on machine learning projects in Python.",
+      "highlights": [
+        "7+ years software engineering",
+        "Angular & C#/.NET",
+        "Python & SQL",
+        "Data analysis & applied ML"
+      ],
+      "primaryAction": { "label": "Explore My Work", "target": "projects" },
+      "secondaryAction": { "label": "Contact Me", "target": "contact" }
+    },
+    "about": {
+      "title": "About Me",
+      "paragraphs": [
+        "I am a Software Engineer with 7+ years of experience delivering enterprise software across billing, financial services, ERP and higher education.",
+        "My work combines software engineering, data processing and business problem-solving. I have designed full-stack applications, APIs, automated data workflows, operational dashboards and financial reporting systems using Angular, TypeScript, C#, ASP.NET, GraphQL and SQL Server.",
+        "I am currently expanding my work into applied data science and machine learning using Python, Pandas and Scikit-learn, with a particular interest in intelligent systems, research-driven engineering and real-world data problems."
+      ],
+      "image": "https://raw.githubusercontent.com/Anusha-Bharati/AB-portfolio-content/main/assets/anusha.jpg"
+    },
+    "skills": {
+      "title": "Skills",
+      "groups": [
+        {
+          "id": "data-ml",
+          "label": "Data & Machine Learning",
+          "items": ["Python", "SQL", "Pandas", "NumPy", "Scikit-learn", "Exploratory Data Analysis", "Data Cleaning", "Feature Engineering", "Logistic Regression", "Random Forest", "Model Evaluation", "Data Visualisation"]
+        },
+        {
+          "id": "software-engineering",
+          "label": "Software Engineering",
+          "items": ["C#", "ASP.NET", "Angular", "TypeScript", "JavaScript", "GraphQL", "REST APIs", "Entity Framework", "HTML5", "CSS3"]
+        },
+        {
+          "id": "data-platforms",
+          "label": "Data & Platforms",
+          "items": ["Microsoft SQL Server", "Stored Procedures", "SQL Query Optimisation", "Financial Reporting", "KPI Reporting", "Dashboard Development", "Data Validation"]
+        },
+        {
+          "id": "delivery",
+          "label": "Engineering Practices",
+          "items": ["Azure DevOps", "Git", "CI/CD", "Agile", "SOLID", "OOP", "Microservices", "Performance Optimisation", "Production Support"]
+        }
+      ]
+    },
+    "experience": {
+      "title": "Experience",
+      "items": [
+        {
+          "id": "brave-new-world-software-developer",
+          "role": "Software Developer",
+          "company": "Brave New World",
+          "startDate": "2022-12",
+          "endDate": null,
+          "dateLabel": "Dec 2022 – Present",
+          "companyUrl": "",
+          "image": "assets/eve.jpeg",
+          "summary": "Own end-to-end development of enterprise billing and financial software, combining full-stack engineering, SQL-based analysis, automation and reporting.",
+          "highlights": [
+            "Owned the design, architecture, development and delivery of core functionality for a large-scale Managed Billing platform.",
+            "Analysed billing data using SQL during monthly bill runs, investigated billing exceptions and resolved data-quality issues with billing, finance and operational teams.",
+            "Built billing, invoice, tariff, financial operations and reporting modules using Angular, TypeScript, C#, ASP.NET, GraphQL and SQL Server.",
+            "Designed operational dashboards and Invoice/Margin Reporting capabilities for billing validation, profitability analysis and financial sign-off.",
+            "Designed an API-driven data-processing framework for validation, transformation and exception handling, eliminating 4–5 days of manual effort per billing cycle.",
+            "Managed CI/CD pipelines, releases and version control through Azure DevOps and Git."
+          ],
+          "technologies": ["Angular", "TypeScript", "C#", "ASP.NET", "GraphQL", "SQL Server", "Azure DevOps", "Git"]
+        },
+        {
+          "id": "university-bath-data-analyst",
+          "role": "Data Analyst (Part-Time)",
+          "company": "University of Bath",
+          "startDate": "2021-11",
+          "endDate": "2022-10",
+          "dateLabel": "Nov 2021 – Oct 2022",
+          "companyUrl": "https://www.bath.ac.uk/",
+          "image": "assets/uob.png",
+          "summary": "Managed academic datasets supporting institutional systems through data validation, reporting and quality assurance.",
+          "highlights": [
+            "Managed academic datasets through data validation, reporting and quality assurance.",
+            "Collaborated with university stakeholders to investigate data issues, maintain accurate course information and improve data integrity."
+          ],
+          "technologies": ["Data Analysis", "Data Validation", "Reporting", "Quality Assurance"]
+        },
+        {
+          "id": "accenture-application-development-analyst",
+          "role": "Application Development Analyst",
+          "company": "Accenture",
+          "startDate": "2020-12",
+          "endDate": "2021-09",
+          "dateLabel": "Dec 2020 – Sep 2021",
+          "companyUrl": "https://www.accenture.com/",
+          "image": "assets/Accenture.jpeg",
+          "summary": "Led development activities across enterprise financial applications, owning software enhancements from requirements through production support.",
+          "highlights": [
+            "Led development activities across enterprise financial applications and mentored three junior developers.",
+            "Owned software enhancements from requirement analysis through development, testing, deployment and production support.",
+            "Performed root-cause analysis of production issues and implemented permanent technical solutions.",
+            "Received the Accenture Celebrates Excellence Award for project delivery and client satisfaction."
+          ],
+          "technologies": ["Enterprise Applications", "SQL", "Production Support", "Agile"]
+        },
+        {
+          "id": "accenture-application-development-associate",
+          "role": "Application Development Associate",
+          "company": "Accenture",
+          "startDate": "2018-11",
+          "endDate": "2020-12",
+          "dateLabel": "Nov 2018 – Dec 2020",
+          "companyUrl": "https://www.accenture.com/",
+          "image": "assets/Accenture.jpeg",
+          "summary": "Developed and supported enterprise financial applications using Oracle PeopleSoft FSCM, SQL and PeopleCode.",
+          "highlights": [
+            "Worked across Accounts Payable, Accounts Receivable, Purchase Orders and General Ledger modules.",
+            "Performed testing, deployment and production-support activities for enterprise financial applications."
+          ],
+          "technologies": ["Oracle PeopleSoft FSCM", "SQL", "PeopleCode", "Financial Systems"]
+        }
+      ]
+    },
+    "projects": {
+      "title": "Selected Projects",
+      "subtitle": "A mix of applied machine learning and production software engineering.",
+      "items": [
+        {
+          "id": "titanic-survival-prediction",
+          "slug": "titanic-survival-prediction",
+          "title": "Titanic Survival Prediction",
+          "type": "Machine Learning",
+          "status": "in-progress",
+          "featured": true,
+          "visible": true,
+          "summary": "An applied classification project exploring passenger survival using Logistic Regression and Random Forest, with a particular focus on model evaluation and data leakage.",
+          "problem": "Can passenger characteristics be used to predict survival while maintaining a valid and leakage-free evaluation process?",
+          "technologies": ["Python", "Pandas", "Scikit-learn", "Logistic Regression", "Random Forest"],
+          "topics": ["Exploratory Data Analysis", "Classification", "Feature Engineering", "Model Evaluation", "Data Leakage"],
+          "image": "",
+          "githubUrl": "",
+          "demoUrl": "",
+          "researchNoteSlug": "data-leakage-titanic",
+          "highlights": [
+            "Performed exploratory data analysis and data preprocessing on passenger-level data.",
+            "Developed Logistic Regression and Random Forest classification models.",
+            "Investigated data leakage encountered during model development and its effect on model evaluation."
+          ]
+        },
+        {
+          "id": "enterprise-billing-platform",
+          "slug": "enterprise-billing-platform",
+          "title": "Enterprise Billing Platform",
+          "type": "Professional Software Engineering",
+          "status": "completed",
+          "featured": true,
+          "visible": true,
+          "summary": "Enterprise billing software supporting customer billing, tariffs, invoices, fixed charges, financial processing and operational reporting.",
+          "problem": "Build maintainable software for complex billing and financial workflows while improving visibility, self-service and operational efficiency.",
+          "technologies": ["Angular", "TypeScript", "C#", "ASP.NET", "GraphQL", "SQL Server", "Azure DevOps"],
+          "topics": ["Enterprise Software", "Financial Systems", "APIs", "Data Processing", "Reporting"],
+          "image": "",
+          "githubUrl": "",
+          "demoUrl": "",
+          "researchNoteSlug": null,
+          "highlights": [
+            "Delivered full-stack billing, invoice, tariff and reporting functionality.",
+            "Built operational dashboards for billing performance, invoices and KPIs.",
+            "Created reporting capabilities supporting billing validation, profitability analysis and financial sign-off."
+          ],
+          "confidentialityNote": "Professional project. Implementation details and source code are not publicly available."
+        },
+        {
+          "id": "api-driven-data-processing",
+          "slug": "api-driven-data-processing",
+          "title": "API-Driven Data Processing Framework",
+          "type": "Professional Software Engineering",
+          "status": "completed",
+          "featured": true,
+          "visible": true,
+          "summary": "A validation and transformation workflow automating billing-data processing and exception handling.",
+          "problem": "Reduce manual processing time and engineering dependency in recurring billing-data workflows.",
+          "technologies": ["C#", "ASP.NET", "GraphQL", "SQL Server", "Angular", "Azure DevOps"],
+          "topics": ["Automation", "Data Validation", "APIs", "Exception Handling", "Business Process Automation"],
+          "image": "",
+          "githubUrl": "",
+          "demoUrl": "",
+          "researchNoteSlug": null,
+          "highlights": [
+            "Automated validation, transformation, exception handling and billing-data processing.",
+            "Eliminated 4–5 days of manual effort per billing cycle.",
+            "Reduced support dependency after data loads."
+          ],
+          "confidentialityNote": "Professional project. Implementation details and source code are not publicly available."
+        },
+        {
+          "id": "human-activity-recognition",
+          "slug": "human-activity-recognition",
+          "title": "Human Activity Recognition from Wearable Sensor Data",
+          "type": "Machine Learning",
+          "status": "planned",
+          "featured": false,
+          "visible": false,
+          "summary": "Planned machine-learning project exploring classification of human activities from wearable sensor measurements.",
+          "problem": "Can sensor measurements from wearable devices distinguish activities such as walking, sitting and standing?",
+          "technologies": ["Python", "Pandas", "Scikit-learn"],
+          "topics": ["Sensor Data", "Classification", "Wearables", "Human Activity Recognition"],
+          "image": "",
+          "githubUrl": "",
+          "demoUrl": "",
+          "researchNoteSlug": null,
+          "highlights": []
+        }
+      ]
+    },
+    "researchNotes": {
+      "title": "Research Notes",
+      "subtitle": "Things I encounter, question and learn while working through data and machine-learning problems.",
+      "items": [
+        {
+          "id": "data-leakage-titanic",
+          "slug": "data-leakage-titanic",
+          "title": "When My Model Looked Too Good: Data Leakage in the Titanic Project",
+          "date": null,
+          "status": "draft",
+          "featured": true,
+          "visible": true,
+          "category": "Machine Learning",
+          "tags": ["Data Leakage", "Model Evaluation", "Titanic", "Scikit-learn"],
+          "excerpt": "A practical note on encountering data leakage while building a Titanic classifier, how it affected evaluation, and what I changed to make the experiment more trustworthy.",
+          "markdownUrl": "blog/data-leakage-titanic.md",
+          "relatedProjectId": "titanic-survival-prediction"
+        }
+      ]
+    },
+    "contact": {
+      "title": "Contact",
+      "message": "Feel free to get in touch about software engineering, data and machine-learning opportunities, research-oriented engineering roles, or interesting technical problems.",
+      "email": "anusha.bharati085@gmail.com",
+      "links": [
+        { "id": "github", "label": "GitHub", "url": "https://github.com/Anusha-Bharati", "visible": true },
+        { "id": "linkedin", "label": "LinkedIn", "url": "https://www.linkedin.com/in/anushabharati", "visible": true },
+        { "id": "instagram", "label": "Instagram", "url": "https://www.instagram.com/anuuushaaa.b/", "visible": false }
+      ]
+    },
+    "footer": {
+      "text": "Built with Angular by Anusha Bharati",
+      "repositoryUrl": "https://github.com/Anusha-Bharati/AnushaB-portfolio",
+      "designCredit": "Design originally inspired by Brittany Chiang"
+    }
+  }
+  

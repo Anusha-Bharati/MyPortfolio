@@ -1,0 +1,52 @@
+{
+  "name": "anusha-b-portfolio",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "^17.3.0",
+    "@angular/common": "^17.3.0",
+    "@angular/core": "^17.3.0",
+    "@angular/forms": "^17.3.0",
+    "@angular/material": "^17.3.10",
+    "@angular/platform-browser": "^17.3.0",
+    "@angular/platform-browser-dynamic": "^17.3.0",
+    "@angular/router": "^17.3.0",
+    "@fortawesome/fontawesome-free": "^5.15.4",
+    "@fortawesome/fontawesome-svg-core": "^6.6.0",
+    "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@ng-bootstrap/ng-bootstrap": "^16.0.0",
+    "angular-gtag": "^1.0.4",
+    "aos": "^2.3.4",
+    "bootstrap": "^5.3.3",
+    "bootstrap-icons": "^1.11.3",
+    "material-icons": "^1.13.12",
+    "ng-bootstrap-icons": "^13.1.2-canary.1",
+    "ngx-google-analytics": "^14.0.1",
+    "ngx-owl-carousel-o": "^17.0.0",
+    "primeicons": "^7.0.0",
+    "primeng": "^17.18.7",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.14.3"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^17.3.7",
+    "@angular/cli": "^17.3.8",
+    "@types/aos": "^3.0.7",
+    "@types/jasmine": "~5.1.0",
+    "jasmine-core": "~5.1.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "typescript": "~5.4.2"
+  }
+}
