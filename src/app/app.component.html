@@ -1,6 +1,6 @@
 <header class="main-navbar" *ngIf="site as s">
   <button type="button" class="brand" (click)="scrollIntoView('home')" aria-label="Go to top">
-    <!-- <img [src]="s.logo" [alt]="s.name + ' logo'" width="40" height="40" /> -->
+    <img [src]="s.logo" [alt]="s.name + ' logo'" width="40" height="40" >
   </button>
 
   <button type="button" class="menu-toggle" (click)="navOpen = !navOpen" [attr.aria-expanded]="navOpen" aria-label="Toggle navigation">☰</button>
@@ -28,17 +28,14 @@
   <a [href]="f.repositoryUrl" target="_blank" rel="noopener noreferrer">{{ f.text }}</a>
   <span>{{ f.designCredit }}</span>
   <div class="portfolio-version">
-    <span>Portfolio V2</span>
-  
-    <span class="version-divider">•</span>
-  
+    <span>Portfolio V1</span>
     <a
-      *ngIf="site?.legacyPortfolioUrl"
-      [href]="site?.legacyPortfolioUrl"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      View V1 ↗
-    </a>
+    *ngIf="site?.legacyPortfolioUrl"
+    [href]="site?.legacyPortfolioUrl"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    View V1 ↗
+  </a> 
   </div>
 </footer>

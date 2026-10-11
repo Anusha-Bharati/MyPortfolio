@@ -18,7 +18,7 @@ export interface SiteContent {
   resumeUrl: string;
   profileImage: string;
   logo: string;
-  legacyPortfolioUrl: string;
+  legacyPortfolioUrl?: string;
 }
 
 export interface NavigationItem {

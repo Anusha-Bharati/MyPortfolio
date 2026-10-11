@@ -21,16 +21,22 @@ export class AppComponent implements OnInit {
     public readonly googleAnalytics: GoogleAnalytics
   ) {}
 
-  ngOnInit(): void {
-    AOS.init({ once: true, duration: 650, easing: 'ease-out-cubic' });
-    this.contentService.getContent().subscribe(content => {
-      this.site = content.site;
-      this.footer = content.footer;
-      this.navigation = content.navigation
-        .filter(item => item.visible)
-        .sort((a, b) => a.order - b.order);
-    });
-  }
+  ngOnInit(): void { 
+      AOS.init({
+        once: true,
+        duration: 650,
+        easing: 'ease-out-cubic'
+      });
+    
+      this.contentService.getContent().subscribe(content => {
+        this.site = content.site;
+        this.footer = content.footer;
+    
+        this.navigation = content.navigation
+          .filter(item => item.visible)
+          .sort((a, b) => a.order - b.order);
+      });
+    }
  
   scrollIntoView(sectionId: string): void {
     document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
