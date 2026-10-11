@@ -162,3 +162,35 @@ footer {
   }
 
 }
+
+.portfolio-version {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  gap: .65rem;
+
+  margin-top: 1.5rem;
+
+  color: $Slate;
+
+  font-family: $CodeFont;
+  font-size: .72rem;
+
+  a {
+    color: $LightSlate;
+
+    transition:
+      color .25s ease,
+      transform .25s ease;
+
+    &:hover {
+      color: $Green;
+      transform: translateY(-1px);
+    }
+  }
+}
+
+.version-divider {
+  color: $Green;
+}

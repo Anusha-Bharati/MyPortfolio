@@ -273,10 +273,12 @@ a {
   background:
     linear-gradient(
       145deg,
-      rgba(255, 249, 244, 0.025),
-      transparent 45%
-    ),
-    $LightNavy;
+      rgba(17, 23, 34, .92),
+      rgba(17, 23, 34, .78)
+    );
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 
   border: 1px solid rgba(231, 195, 165, .10);
   border-radius: 16px;
@@ -500,4 +502,96 @@ a {
     scroll-behavior: auto !important;
   }
 
+}
+.ambient-background {
+  position: fixed;
+  inset: 0;
+
+  overflow: hidden;
+
+  pointer-events: none;
+
+  z-index: 0;
+
+  background: $Navy;
+}
+
+.milky-way {
+  position: absolute;
+
+  width: 115%;
+  height: 115%;
+
+  top: -7.5%;
+  left: -7.5%;
+
+  background:
+    url('/assets/backgrounds/milky-way.webp')
+    center 38% / cover no-repeat;
+
+  opacity: .42;
+
+  filter:
+    saturate(.65)
+    contrast(1.08)
+    brightness(.68);
+
+  transform:
+    translate3d(
+      calc(var(--mouse-x, 0) * -8px),
+      calc(var(--mouse-y, 0) * -8px),
+      0
+    )
+    scale(1.02);
+
+  transition:
+    transform .35s cubic-bezier(.2,.8,.2,1);
+
+  will-change: transform;
+}
+.space-vignette {
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(9, 13, 22, .25) 0%,
+      rgba(9, 13, 22, .55) 55%,
+      rgba(9, 13, 22, .92) 100%
+    ),
+    radial-gradient(
+      ellipse at center,
+      transparent 25%,
+      rgba(9, 13, 22, .35) 70%,
+      rgba(9, 13, 22, .72) 100%
+    );
+}
+
+.cursor-light {
+  position: absolute;
+
+  width: 520px;
+  height: 520px;
+
+  left: calc(var(--mouse-px, 50%) - 260px);
+  top: calc(var(--mouse-py, 50%) - 260px);
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(231, 195, 165, .08) 0%,
+      rgba(201, 157, 152, .035) 35%,
+      transparent 68%
+    );
+
+  filter: blur(18px);
+
+  transition:
+    left .18s ease-out,
+    top .18s ease-out;
+
+  will-change: left, top;
 }
