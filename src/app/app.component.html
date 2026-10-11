@@ -4,7 +4,9 @@
   </button>
 
   <button type="button" class="menu-toggle" (click)="navOpen = !navOpen" [attr.aria-expanded]="navOpen" aria-label="Toggle navigation">☰</button>
-
+ 
+  
+  <!-- existing navbar / page -->
   <nav [class.open]="navOpen" aria-label="Main navigation">
     <button *ngFor="let item of navigation" type="button" class="nav-link" (click)="scrollIntoView(item.sectionId)">
       {{ item.label }}
@@ -14,6 +16,11 @@
 </header>
 
 <main>
+  <div class="ambient-background" aria-hidden="true">
+    <div class="star-layer stars-back"></div>
+    <div class="star-layer stars-front"></div>
+    <div class="ambient-glow"></div>
+  </div>
   <app-banner></app-banner>
   <app-about-me></app-about-me>
   <app-experience></app-experience>

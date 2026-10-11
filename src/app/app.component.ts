@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import AOS from 'aos';
 import { FooterContent, NavigationItem, SiteContent } from './models/PortfolioContent';
 import { GoogleAnalytics } from './services/googleAnalytics.service';
@@ -9,6 +9,7 @@ import { ContentService } from './services/contentService.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
+
 export class AppComponent implements OnInit {
   site?: SiteContent;
   footer?: FooterContent;
@@ -30,7 +31,41 @@ export class AppComponent implements OnInit {
         .sort((a, b) => a.order - b.order);
     });
   }
-
+  @HostListener('document:mousemove', ['$event'])
+  onMouseMove(event: MouseEvent): void {
+  
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+  
+    const normalizedX =
+      (event.clientX / width - 0.5) * 2;
+  
+    const normalizedY =
+      (event.clientY / height - 0.5) * 2;
+  
+    const root =
+      document.documentElement;
+  
+    root.style.setProperty(
+      '--mouse-x',
+      normalizedX.toString()
+    );
+  
+    root.style.setProperty(
+      '--mouse-y',
+      normalizedY.toString()
+    );
+  
+    root.style.setProperty(
+      '--mouse-px',
+      `${event.clientX}px`
+    );
+  
+    root.style.setProperty(
+      '--mouse-py',
+      `${event.clientY}px`
+    );
+  }
   scrollIntoView(sectionId: string): void {
     document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     this.navOpen = false;

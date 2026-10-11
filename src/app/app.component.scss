@@ -18,3 +18,147 @@ nav { display: flex; align-items: center; gap: .25rem; }
   nav.open { display: flex; }
   .nav-link, .cv-btn { text-align: left; margin: 0; }
 }
+/* =================================
+   AMBIENT BACKGROUND
+================================= */
+
+.ambient-background {
+  position: fixed;
+  inset: 0;
+
+  overflow: hidden;
+
+  pointer-events: none;
+
+  z-index: 0;
+
+  background:
+    radial-gradient(
+      circle at 15% 20%,
+      rgba(201, 157, 152, .055),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 85% 70%,
+      rgba(231, 195, 165, .04),
+      transparent 35%
+    );
+}
+
+.star-layer {
+  position: absolute;
+
+  width: 120%;
+  height: 120%;
+
+  top: -10%;
+  left: -10%;
+
+  will-change: transform;
+
+  transition: transform .15s ease-out;
+}
+
+
+/* FAR STARS */
+
+.stars-back {
+  opacity: .35;
+
+  background-image:
+    radial-gradient(circle, #fff9f4 1px, transparent 1px),
+    radial-gradient(circle, #e7c3a5 .8px, transparent .8px),
+    radial-gradient(circle, #c99d98 .7px, transparent .7px);
+
+  background-size:
+    130px 130px,
+    190px 190px,
+    250px 250px;
+
+  background-position:
+    15px 20px,
+    80px 110px,
+    160px 40px;
+
+  transform:
+    translate(
+      calc(var(--mouse-x, 0) * -5px),
+      calc(var(--mouse-y, 0) * -5px)
+    );
+}
+
+
+/* CLOSER STARS */
+
+.stars-front {
+  opacity: .45;
+
+  background-image:
+    radial-gradient(circle, #fff9f4 1.2px, transparent 1.4px),
+    radial-gradient(circle, #e7c3a5 1px, transparent 1.3px);
+
+  background-size:
+    280px 280px,
+    360px 360px;
+
+  background-position:
+    35px 80px,
+    190px 160px;
+
+  transform:
+    translate(
+      calc(var(--mouse-x, 0) * -11px),
+      calc(var(--mouse-y, 0) * -11px)
+    );
+}
+
+
+/* MOUSE GLOW */
+
+.ambient-glow {
+  position: absolute;
+
+  width: 500px;
+  height: 500px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(231, 195, 165, .07),
+      rgba(201, 157, 152, .025) 35%,
+      transparent 70%
+    );
+
+  left: calc(var(--mouse-px, 50%) - 250px);
+  top: calc(var(--mouse-py, 50%) - 250px);
+
+  filter: blur(10px);
+
+  transition:
+    left .12s ease-out,
+    top .12s ease-out;
+}
+
+
+/* Make actual website sit above background */
+
+.main-navbar,
+main,
+footer {
+  position: relative;
+  z-index: 1;
+}
+@media (hover: none), (pointer: coarse) {
+
+  .stars-back,
+  .stars-front {
+    transform: none;
+  }
+
+  .ambient-glow {
+    display: none;
+  }
+
+}

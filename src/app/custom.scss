@@ -1,12 +1,36 @@
-$Navy         : #0a192c;
-$LightNavy    : #112240;
-$LightestNavy : #303C55;
-$Slate        : #8892b0;
-$LightSlate   : #a8b2d1;
-$LightestSlate: #ccd6f6;
-$White        : #e6f1ff;
-$Green        : #64ffda;
-$GreenOpacity : rgba(188, 213, 207, 0.07);
+/* =================================
+   PORTFOLIO V2 — MIDNIGHT NUDE
+================================= */
 
-$MainFont: Calibre,San Francisco,SF Pro Text,-apple-system,system-ui,BlinkMacSystemFont,Roboto,Helvetica Neue,Segoe UI,Arial,sans-serif;
-$CodeFont: SF Mono, Fira Code, Fira Mono, Roboto Mono, Lucida Console, Monaco, Monospace;
+/* Backgrounds */
+$Navy: #090D16;
+$LightNavy: #111722;
+$LightestNavy: #1D2532;
+
+/* Typography */
+$White: #FFF9F4;
+$LightestSlate: #EDE3DA;
+$LightSlate: #C9BEB5;
+$Slate: #968B84;
+
+/* Main nude accent */
+$Green: #E7C3A5;
+
+/* Secondary accent */
+$Rose: #C99D98;
+
+/* Very subtle warm glow */
+$GreenOpacity: rgba(231, 195, 165, 0.08);
+
+/* Fonts */
+$MainFont:
+  "Space Grotesk",
+  -apple-system,
+  BlinkMacSystemFont,
+  "Segoe UI",
+  sans-serif;
+
+$CodeFont:
+  "JetBrains Mono",
+  "SF Mono",
+  monospace;
