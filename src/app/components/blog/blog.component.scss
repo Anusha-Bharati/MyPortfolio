@@ -1,0 +1,350 @@
+@import "./../../custom.scss";
+
+.blog-page {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 2rem 1rem 5rem;
+}
+
+.section-heading-row {
+  margin: 0 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 1rem;
+}
+
+.section-kicker {
+  color: $Green;
+  font-family: $CodeFont;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+}
+
+.section-heading-row h1 {
+  color: $White;
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin: 0.65rem 0;
+}
+
+.section-heading-row p {
+  color: $Slate;
+  max-width: 650px;
+  margin: 0.5rem 0 0;
+  line-height: 1.7;
+}
+
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.blog-card {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background: $LightNavy;
+  border: 1px solid $LightestNavy;
+  border-radius: 18px;
+  padding: 1.5rem;
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.blog-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(100, 255, 218, 0.6);
+}
+
+.note-meta {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  color: $Green;
+  font-family: $CodeFont;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.blog-card h2 {
+  color: $White;
+  font-size: 1.3rem;
+  line-height: 1.35;
+  margin: 1.15rem 0 0.5rem;
+}
+
+.blog-card h2 a {
+  color: inherit;
+  font: inherit;
+}
+
+.blog-excerpt {
+  color: $Slate;
+  font-size: 0.92rem;
+  line-height: 1.7;
+  margin: 0.5rem 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.8rem 0 1.2rem;
+}
+
+.tags span {
+  color: $LightSlate;
+  font-family: $CodeFont;
+  font-size: 0.68rem;
+}
+
+a,
+.read-link,
+.back-link,
+.not-found a {
+  color: $Green;
+  font-family: $CodeFont;
+  font-size: 0.8rem;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.read-link {
+  margin-top: auto;
+  padding-top: 0.8rem;
+}
+
+.article-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 255px;
+  align-items: start;
+  gap: 2.5rem;
+}
+
+.blog-article {
+  min-width: 0;
+  background: $LightNavy;
+  border: 1px solid $LightestNavy;
+  border-radius: 18px;
+  padding: clamp(1.25rem, 4vw, 2.5rem);
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 2rem;
+}
+
+.article-meta {
+  margin-bottom: 1rem;
+}
+
+.blog-article h1 {
+  color: $White;
+  font-size: clamp(1.8rem, 4vw, 2.7rem);
+  line-height: 1.2;
+  margin: 0.75rem 0 1rem;
+  overflow-wrap: anywhere;
+}
+
+.article-lead {
+  color: $LightSlate;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  margin-bottom: 2rem;
+}
+
+.markdown-body {
+  color: $LightSlate;
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+
+:host ::ng-deep .markdown-body h2,
+:host ::ng-deep .markdown-body h3,
+:host ::ng-deep .markdown-body h4 {
+  color: $White;
+  line-height: 1.4;
+  margin: 2rem 0 0.8rem;
+}
+
+:host ::ng-deep .markdown-body h2 {
+  font-size: 1.6rem;
+}
+
+:host ::ng-deep .markdown-body h3 {
+  font-size: 1.25rem;
+}
+
+:host ::ng-deep .markdown-body p,
+:host ::ng-deep .markdown-body ul,
+:host ::ng-deep .markdown-body ol {
+  margin: 0 0 1.2rem;
+}
+
+:host ::ng-deep .markdown-body li {
+  margin: 0.35rem 0;
+}
+
+:host ::ng-deep .markdown-body a {
+  color: $Green;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+:host ::ng-deep .markdown-body blockquote {
+  border-left: 2px solid $Green;
+  margin: 1.5rem 0;
+  padding: 0.25rem 0 0.25rem 1rem;
+  color: $Slate;
+}
+
+:host ::ng-deep .markdown-body code {
+  font-family: $CodeFont;
+  font-size: 0.85em;
+  background: rgba(10, 25, 44, 0.75);
+  border-radius: 4px;
+  padding: 0.15rem 0.35rem;
+}
+
+:host ::ng-deep .markdown-body pre {
+  max-width: 100%;
+  overflow-x: auto;
+  background: #081525;
+  border: 1px solid $LightestNavy;
+  border-radius: 10px;
+  padding: 1rem;
+  margin: 1.5rem 0;
+}
+
+:host ::ng-deep .markdown-body pre code {
+  padding: 0;
+  background: transparent;
+}
+
+:host ::ng-deep .markdown-body hr {
+  border: 0;
+  border-top: 1px solid $LightestNavy;
+  margin: 2rem 0;
+}
+
+.recommended-blogs {
+  position: sticky;
+  top: 2rem;
+  min-width: 0;
+}
+
+.recommended-blogs h2 {
+  color: $White;
+  font-size: 1.25rem;
+  margin: 0.65rem 0 1rem;
+}
+
+.recommendation-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 1rem 0;
+  border-top: 1px solid $LightestNavy;
+}
+
+.recommendation-category {
+  color: $Green;
+  font-family: $CodeFont;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+}
+
+.recommendation-card strong {
+  color: $White;
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.recommendation-excerpt {
+  color: $Slate;
+  font-family: $MainFont;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.recommendation-link {
+  color: $Green;
+  font-family: $CodeFont;
+  font-size: 0.72rem;
+  margin-top: 0.15rem;
+}
+
+.empty-state,
+.status-message,
+.not-found p {
+  color: $Slate;
+  line-height: 1.7;
+}
+
+.error-message {
+  color: #e6b6a7;
+  line-height: 1.6;
+}
+
+.not-found {
+  padding: 3rem 0;
+}
+
+.not-found h1 {
+  color: $White;
+}
+
+@media (max-width: 900px) {
+  .blog-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .article-layout {
+    grid-template-columns: minmax(0, 1fr) 220px;
+    gap: 1.25rem;
+  }
+}
+
+@media (max-width: 650px) {
+  .blog-page {
+    padding-top: 1rem;
+  }
+
+  .blog-grid,
+  .article-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .recommended-blogs {
+    position: static;
+    margin-top: 1rem;
+  }
+
+  .blog-card {
+    padding: 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blog-card {
+    transition: none;
+  }
+
+  .blog-card:hover {
+    transform: none;
+  }
+}

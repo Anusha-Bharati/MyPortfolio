@@ -1,0 +1,134 @@
+<section class="blog-page">
+
+    <!-- Blog listing: /blog -->
+    <ng-container *ngIf="!currentSlug; else articleRoute">
+  
+      <header class="section-heading-row">
+        <div>
+          <span class="section-kicker">WRITING & RESEARCH</span>
+          <h1>Blog</h1>
+          <p>
+            Notes on software engineering, data, machine learning,
+            and the things I learn while building.
+          </p>
+        </div>
+      </header>
+  
+      <p class="error-message" *ngIf="contentError">
+        {{ contentError }}
+      </p>
+  
+      <div class="blog-grid" *ngIf="posts.length; else emptyState">
+        <article class="blog-card" *ngFor="let post of posts">
+  
+          <div class="note-meta">
+            <span>{{ post.category || 'Article' }}</span>
+            <span *ngIf="post.readTime">{{ post.readTime }}</span>
+          </div>
+  
+          <h2>
+            <a [routerLink]="['/blog', getSlug(post)]">
+              {{ post.title }}
+            </a>
+          </h2>
+  
+          <p class="blog-excerpt">{{ post.excerpt }}</p>
+  
+          <div class="tags" *ngIf="post.tags?.length">
+            <span *ngFor="let tag of post.tags">{{ tag }}</span>
+          </div>
+  
+          <a class="read-link" [routerLink]="['/blog', getSlug(post)]">
+            Read article ↗
+          </a>
+  
+        </article>
+      </div>
+  
+      <ng-template #emptyState>
+        <p class="empty-state" *ngIf="!contentLoaded">
+          Loading articles…
+        </p>
+  
+        <p class="empty-state" *ngIf="contentLoaded && !contentError">
+          No published articles yet. Check back soon.
+        </p>
+      </ng-template>
+  
+    </ng-container>
+  
+    <!-- Article page: /blog/article-slug -->
+    <ng-template #articleRoute>
+  
+      <ng-container *ngIf="selectedPost as post; else articleUnavailable">
+  
+        <div class="article-layout">
+  
+            <article class="blog-article">
+
+                <a class="back-link" routerLink="/blog">
+                  ← All blogs
+                </a>
+              
+                <p class="status-message" *ngIf="loadingPost">
+                  Loading article…
+                </p>
+              
+                <p class="error-message" *ngIf="postError">
+                  {{ postError }}
+                </p>
+              
+                <div
+                  class="markdown-body"
+                  *ngIf="!loadingPost && !postError && renderedMarkdown"
+                  [innerHTML]="renderedMarkdown">
+                </div>
+              
+              </article>
+  
+          <aside class="recommended-blogs" *ngIf="recommendedPosts.length">
+  
+            <span class="section-kicker">MORE TO EXPLORE</span>
+            <h2>Keep reading</h2>
+  
+            <a
+              class="recommendation-card"
+              *ngFor="let recommendation of recommendedPosts"
+              [routerLink]="['/blog', getSlug(recommendation)]">
+  
+              <span class="recommendation-category">
+                {{ recommendation.category || 'Article' }}
+              </span>
+  
+              <strong>{{ recommendation.title }}</strong>
+  
+              <span class="recommendation-excerpt">
+                {{ recommendation.excerpt }}
+              </span>
+  
+              <span class="recommendation-link">Read article ↗</span>
+            </a>
+  
+          </aside>
+  
+        </div>
+  
+      </ng-container>
+  
+      <ng-template #articleUnavailable>
+        <div class="not-found" *ngIf="!contentLoaded">
+          <p>Loading article…</p>
+        </div>
+  
+        <div class="not-found" *ngIf="contentLoaded">
+          <h1>Article not found</h1>
+          <p>
+            This article may have moved or is no longer published.
+          </p>
+          <a routerLink="/blog">Browse all blogs ↗</a>
+        </div>
+      </ng-template>
+  
+    </ng-template>
+  
+  </section>

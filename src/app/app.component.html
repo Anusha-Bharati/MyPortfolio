@@ -1,41 +1,39 @@
-<header class="main-navbar" *ngIf="site as s">
-  <button type="button" class="brand" (click)="scrollIntoView('home')" aria-label="Go to top">
-    <img [src]="s.logo" [alt]="s.name + ' logo'" width="40" height="40" >
+<header class="main-navbar">
+  <button
+    type="button"
+    class="brand"
+    (click)="navigateToSection('home')"
+    aria-label="Go to top">
+    <img [src]="site?.logo" [alt]="site?.name" width="40" height="40">
   </button>
 
-  <button type="button" class="menu-toggle" (click)="navOpen = !navOpen" [attr.aria-expanded]="navOpen" aria-label="Toggle navigation">☰</button>
+  <button
+    type="button"
+    class="menu-toggle"
+    (click)="navOpen = !navOpen"
+    [attr.aria-expanded]="navOpen"
+    aria-label="Toggle navigation">
+    ☰
+  </button>
  
   
   <!-- existing navbar / page -->
   <nav [class.open]="navOpen" aria-label="Main navigation">
-    <button *ngFor="let item of navigation" type="button" class="nav-link" (click)="scrollIntoView(item.sectionId)">
+    <button
+      *ngFor="let item of navigation"
+      type="button"
+      class="nav-link"
+      (click)="navigateToItem(item)">
       {{ item.label }}
     </button>
-    <button type="button" class="cv-btn" (click)="downloadCV()">Resume</button>
+
+    <button type="button" class="cv-btn" (click)="downloadCV()">
+      Resume
+    </button>
   </nav>
 </header>
-
-<main>
-  <app-banner></app-banner>
-  <app-about-me></app-about-me>
-  <app-experience></app-experience>
-  <app-projects></app-projects>
-  <app-research-notes></app-research-notes>
-  <app-contact></app-contact>
-</main>
-
+<router-outlet></router-outlet>
 <footer class="site-footer" *ngIf="footer as f">
   <a [href]="f.repositoryUrl" target="_blank" rel="noopener noreferrer">{{ f.text }}</a>
   <span>{{ f.designCredit }}</span>
-  <div class="portfolio-version">
-    <span>Portfolio V1</span>
-    <a
-    *ngIf="site?.legacyPortfolioUrl"
-    [href]="site?.legacyPortfolioUrl"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    View V1 ↗
-  </a> 
-  </div>
 </footer>

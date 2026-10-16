@@ -3,7 +3,7 @@ import AOS from 'aos';
 import { FooterContent, NavigationItem, SiteContent } from './models/PortfolioContent';
 import { GoogleAnalytics } from './services/googleAnalytics.service';
 import { ContentService } from './services/contentService.service';
-
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -18,7 +18,8 @@ export class AppComponent implements OnInit {
 
   constructor(
     private readonly contentService: ContentService,
-    public readonly googleAnalytics: GoogleAnalytics
+    public readonly googleAnalytics: GoogleAnalytics,
+    private readonly router: Router
   ) {}
 
   ngOnInit(): void { 
@@ -48,16 +49,33 @@ export class AppComponent implements OnInit {
       window.open(this.site.resumeUrl, '_blank', 'noopener,noreferrer');
     }
   }
-}
-  /* ============================================================
-   PROCEDURAL MILKY WAY BACKGROUND
-   Paste this at the BOTTOM of app.component.ts.
 
-   No HTML changes.
-   No SCSS changes.
-   No image assets.
-   No packages.
-============================================================ */
+  navigateToItem(item: { id: string; sectionId: string }): void {
+    this.navOpen = false;
+  
+    // Blog is a real page, not a homepage section.
+    if (item.id === 'blog') {
+      void this.router.navigateByUrl('/blog');
+      return;
+    }
+  
+    this.navigateToSection(item.sectionId);
+  }
+  
+  navigateToSection(sectionId: string): void {
+    this.navOpen = false;
+  
+    // If we're on a blog page, return home before scrolling.
+    if (this.router.url !== '/') {
+      void this.router.navigateByUrl('/').then(() => {
+        setTimeout(() => this.scrollIntoView(sectionId), 0);
+      });
+      return;
+    }
+  
+    this.scrollIntoView(sectionId);
+  }
+}
 
 (() => {
 
@@ -74,10 +92,6 @@ export class AppComponent implements OnInit {
     existingCleanup();
   }
 
-
-  /* ============================================================
-     COLOUR PALETTE
-  ============================================================ */
 
   const COLORS = {
 
@@ -99,11 +113,6 @@ export class AppComponent implements OnInit {
 
   };
 
-
-  /* ============================================================
-     CANVAS SETUP
-  ============================================================ */
-
   const canvas = document.createElement('canvas');
 
   canvas.id = 'procedural-milky-way';
@@ -119,13 +128,6 @@ export class AppComponent implements OnInit {
 
   document.body.prepend(canvas);
 
-
-  /*
-   * Put the Angular application above the canvas.
-   *
-   * This also fixes the opaque app-root background hiding
-   * the galaxy.
-   */
   const appRoot =
     document.querySelector('app-root') as HTMLElement | null;
 
@@ -158,10 +160,6 @@ export class AppComponent implements OnInit {
   
   const ctx: CanvasRenderingContext2D = context;
 
-  /* ============================================================
-     STATE
-  ============================================================ */
-
   let width = window.innerWidth;
   let height = window.innerHeight;
 
@@ -169,13 +167,6 @@ export class AppComponent implements OnInit {
     window.devicePixelRatio || 1,
     1.5
   );
-
-
-  /*
-   * Cursor target.
-   *
-   * -1 → 1 range.
-   */
   let targetX = 0;
   let targetY = 0;
 
@@ -183,9 +174,6 @@ export class AppComponent implements OnInit {
   let mouseY = 0;
 
 
-  /*
-   * Animation frame
-   */
   let frameId = 0;
 
   let resizeTimer: ReturnType<typeof setTimeout>;
@@ -200,12 +188,6 @@ export class AppComponent implements OnInit {
     window.matchMedia(
       '(hover: hover) and (pointer: fine)'
     ).matches;
-
-
-  /* ============================================================
-     SEEDED RANDOM
-     Makes the same galaxy appear every refresh.
-  ============================================================ */
 
   function randomFactory(seed: number) {
 
@@ -251,11 +233,6 @@ export class AppComponent implements OnInit {
 
   }
 
-
-  /* ============================================================
-     OFFSCREEN LAYERS
-  ============================================================ */
-
   let farStars =
     document.createElement('canvas');
 
@@ -288,12 +265,6 @@ export class AppComponent implements OnInit {
     return layerContext;
 
   }
-
-
-  /* ============================================================
-     BACKGROUND STAR FIELD
-  ============================================================ */
-
   function createStarField(
     context: CanvasRenderingContext2D,
     count: number,
@@ -323,11 +294,6 @@ export class AppComponent implements OnInit {
         randomBetween(0, height);
 
 
-      /*
-       * Most stars should be extremely small.
-       *
-       * Squaring random() heavily favours tiny points.
-       */
       const radius =
         minimumSize +
         Math.pow(random(), 3) *
@@ -367,12 +333,6 @@ export class AppComponent implements OnInit {
 
       context.fill();
 
-
-      /*
-       * Only a tiny percentage get a soft halo.
-       *
-       * Avoids the childish "sparkle" appearance.
-       */
       if (
         radius > 1 &&
         random() > 0.965
@@ -426,26 +386,9 @@ export class AppComponent implements OnInit {
   }
 
 
-  /* ============================================================
-     MILKY WAY
-  ============================================================ */
-
   function createMilkyWay(
     context: CanvasRenderingContext2D
   ): void {
-
-
-    /*
-     * Main galaxy travels diagonally:
-     *
-     *        \
-     *         \
-     *          \
-     *
-     * This feels much closer to a photographic Milky Way
-     * composition than a horizontal cloud.
-     */
-
 
     const centerX =
       width * 0.48;
@@ -509,14 +452,6 @@ export class AppComponent implements OnInit {
       height
     );
 
-
-    /*
-     * Fine dust cloud.
-     *
-     * Thousands of low-opacity particles create the
-     * Milky Way texture without an image.
-     */
-
     const dustCount =
       Math.min(
         4200,
@@ -542,14 +477,6 @@ export class AppComponent implements OnInit {
           width * 0.85
         );
 
-
-      /*
-       * Gaussian-ish distribution around centre band.
-       *
-       * Average several random values to produce
-       * natural density near the middle.
-       */
-
       const spreadRandom =
         (
           random() +
@@ -568,11 +495,6 @@ export class AppComponent implements OnInit {
           height
         ) *
         0.52;
-
-
-      /*
-       * Rotate coordinates into galaxy direction.
-       */
 
       const x =
         centerX +
@@ -663,11 +585,6 @@ export class AppComponent implements OnInit {
 
     }
 
-
-    /* ============================================================
-       GALACTIC CORE
-    ============================================================ */
-
     const coreGradient =
       context.createRadialGradient(
         centerX,
@@ -710,17 +627,6 @@ export class AppComponent implements OnInit {
       height
     );
 
-
-    /* ============================================================
-       DARK DUST LANES
-    ============================================================ */
-
-    /*
-     * Real Milky Way photography has dark cloud lanes.
-     *
-     * This prevents the background looking like a glowing
-     * airbrush stripe.
-     */
 
     context.globalCompositeOperation =
       'destination-out';
@@ -799,11 +705,6 @@ export class AppComponent implements OnInit {
       'source-over';
 
     context.globalAlpha = 1;
-
-
-    /* ============================================================
-       DENSE GALAXY STARS
-    ============================================================ */
 
     for (
       let i = 0;
@@ -892,10 +793,6 @@ export class AppComponent implements OnInit {
   }
 
 
-  /* ============================================================
-     BUILD STATIC LAYERS
-  ============================================================ */
-
   function buildLayers(): void {
 
     farStars =
@@ -932,9 +829,6 @@ export class AppComponent implements OnInit {
     );
 
 
-    /*
-     * Small number of slightly closer stars.
-     */
     createStarField(
       nearContext,
       Math.floor(
@@ -951,11 +845,6 @@ export class AppComponent implements OnInit {
     );
 
   }
-
-
-  /* ============================================================
-     CANVAS RESIZE
-  ============================================================ */
 
   function resize(): void {
 
@@ -1002,10 +891,6 @@ export class AppComponent implements OnInit {
   }
 
 
-  /* ============================================================
-     CURSOR PARALLAX
-  ============================================================ */
-
   function handlePointerMove(
     event: PointerEvent
   ): void {
@@ -1040,10 +925,6 @@ export class AppComponent implements OnInit {
 
   }
 
-
-  /* ============================================================
-     RENDER
-  ============================================================ */
 
   function drawBackground(): void {
 
@@ -1116,11 +997,6 @@ export class AppComponent implements OnInit {
     ctx.globalAlpha =
       opacity;
 
-
-    /*
-     * Draw slightly oversized so cursor movement
-     * never exposes an empty edge.
-     */
     ctx.drawImage(
       layer,
       offsetX - 18,
@@ -1139,13 +1015,6 @@ export class AppComponent implements OnInit {
     time = 0
   ): void {
 
-
-    /*
-     * Smooth cursor movement.
-     *
-     * Gives the scene physical weight instead of tracking
-     * the mouse instantly.
-     */
 
     mouseX +=
       (
@@ -1210,14 +1079,6 @@ export class AppComponent implements OnInit {
       0.82
     );
 
-
-    /*
-     * VIGNETTE
-     *
-     * Keeps text readable and makes the composition
-     * feel cinematic rather than game-like.
-     */
-
     const vignette =
       ctx.createRadialGradient(
         width / 2,
@@ -1274,10 +1135,6 @@ export class AppComponent implements OnInit {
   }
 
 
-  /* ============================================================
-     EVENTS
-  ============================================================ */
-
   function handleResize(): void {
 
     clearTimeout(
@@ -1326,18 +1183,10 @@ export class AppComponent implements OnInit {
   );
 
 
-  /* ============================================================
-     START
-  ============================================================ */
-
   resize();
 
   render();
 
-
-  /* ============================================================
-     CLEANUP FOR ANGULAR HOT RELOAD
-  ============================================================ */
 
   (window as any).__portfolioGalaxyCleanup =
     () => {
