@@ -2,9 +2,10 @@
   <div class="container-fluid section-box">
 
     <div class="section-heading-row">
-      <div>
+      <div class="heading-copy">
         <h3 class="section-title">
-          <span class="n-section-title">03. {{ title }}</span>
+          <span class="n-section-title"></span>
+          {{ title }}
         </h3>
 
         <p class="section-subtitle" *ngIf="subtitle">
@@ -13,92 +14,121 @@
       </div>
 
       <div class="scroll-controls" aria-label="Project navigation">
-        <button type="button" (click)="scroll(-1)" aria-label="Previous project">←</button>
-        <button type="button" (click)="scroll(1)" aria-label="Next project">→</button>
+        <button
+          type="button"
+          (click)="scroll(-1)"
+          [disabled]="!canScroll(-1)"
+          aria-label="Previous projects">
+          ←
+        </button>
+
+        <button
+          type="button"
+          (click)="scroll(1)"
+          [disabled]="!canScroll(1)"
+          aria-label="Next projects">
+          →
+        </button>
       </div>
     </div>
 
     <div
-      class="content-rail"
       #projectTrack
+      class="content-rail"
       tabindex="0"
       aria-label="Selected projects"
-    >
+      (scroll)="updateActiveCards()">
 
       <article
         class="content-card"
-        *ngFor="let project of projects"
-      >
+        *ngFor="let project of projects; let i = index; trackBy: trackByProject"
+        [class.is-active]="isCardInFocus(i)">
 
+        <!-- Project title and status -->
         <div class="project-heading">
-
-          <div>
+          <div class="project-heading-copy">
             <div class="card-header">
-              <span class="card-type">{{ project.type }}</span>
+              <span class="card-type">
+                {{ project.type }}
+              </span>
+
               <span class="card-date" *ngIf="project.status">
-                {{ project.status }}
+                {{ formatStatus(project.status) }}
               </span>
             </div>
 
-            <h4>{{ project.title }}</h4>
+            <h3>{{ project.title }}</h3>
           </div>
 
           <img
             *ngIf="project.image"
             class="project-thumbnail"
             [src]="project.image"
-            [alt]="project.title"
-            loading="lazy"
-          />
-
+            [alt]="project.title + ' preview'"
+            loading="lazy">
         </div>
 
+        <!-- Problem being solved -->
         <p class="problem" *ngIf="project.problem">
           {{ project.problem }}
         </p>
 
-        <p class="summary">
+        <!-- Project summary -->
+        <p class="summary" *ngIf="project.summary">
           {{ project.summary }}
         </p>
 
-        <ul class="highlights">
+        <!-- Key highlights -->
+        <ul class="highlights" *ngIf="project.highlights?.length">
           <li *ngFor="let highlight of project.highlights | slice:0:4">
             {{ highlight }}
           </li>
         </ul>
 
-        <div class="chips">
+        <!-- Technologies -->
+        <div class="chips" *ngIf="project.technologies?.length">
           <span *ngFor="let tech of project.technologies | slice:0:6">
             {{ tech }}
           </span>
         </div>
 
-        <div
-          class="card-links"
-          *ngIf="project.githubUrl || project.demoUrl"
-        >
-          <a
-            *ngIf="project.githubUrl"
-            [href]="project.githubUrl"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            GitHub ↗
-          </a>
+        <!-- Links and professional-project notice -->
+        <div class="project-footer">
+          <p
+            class="confidentiality-note"
+            *ngIf="project.confidentialityNote">
+            {{ project.confidentialityNote }}
+          </p>
 
-          <a
-            *ngIf="project.demoUrl"
-            [href]="project.demoUrl"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Live demo ↗
-          </a>
+          <div
+            class="card-links"
+            *ngIf="project.githubUrl || project.demoUrl">
+
+            <a
+              *ngIf="project.githubUrl"
+              [href]="project.githubUrl"
+              target="_blank"
+              rel="noopener noreferrer">
+              GitHub <span aria-hidden="true">↗</span>
+            </a>
+
+            <a
+              *ngIf="project.demoUrl"
+              [href]="project.demoUrl"
+              target="_blank"
+              rel="noopener noreferrer">
+              Live demo <span aria-hidden="true">↗</span>
+            </a>
+          </div>
         </div>
 
       </article>
 
-    </div>
+      <!-- Empty state if no visible projects are configured -->
+      <p class="empty-state" *ngIf="projects.length === 0">
+        Projects will appear here soon.
+      </p>
 
+    </div>
   </div>
 </section>

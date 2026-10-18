@@ -1,20 +1,185 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  HostListener,
+  OnDestroy,
+  OnInit,
+  ViewChild
+} from '@angular/core';
+
 import AOS from 'aos';
-import { FooterContent, NavigationItem, SiteContent } from './models/PortfolioContent';
+import { Router } from '@angular/router';
+
+import {
+  FooterContent,
+  NavigationItem,
+  SiteContent
+} from './models/PortfolioContent';
+
 import { GoogleAnalytics } from './services/googleAnalytics.service';
 import { ContentService } from './services/contentService.service';
-import { Router } from '@angular/router';
+
+/**
+ * Midnight navy colour palette.
+ * Mostly cool blue-white stars, with a few champagne accents.
+ */
+const STAR_COLOURS = [
+  '#DDE8FF',
+  '#B4C9F4',
+  '#8EA9E2',
+  '#C8D4F2',
+  '#E7C3A5'
+];
+
+const SHOOTING_STAR_COLOURS = [
+  '#B9D0FF',
+  '#D5DFFF',
+  '#E7C3A5'
+];
+
+/**
+ * Individual animated star.
+ */
+class TwinklingStar {
+  private readonly alpha: number;
+  private readonly phase: number;
+  private readonly twinkleSpeed: number;
+
+  constructor(
+    public readonly x: number,
+    public readonly y: number,
+    public readonly size: number,
+    public readonly colour: string
+  ) {
+    this.alpha = 0.25 + Math.random() * 0.65;
+    this.phase = Math.random() * Math.PI * 2;
+    this.twinkleSpeed = 0.015 + Math.random() * 0.035;
+  }
+
+  draw(
+    context: CanvasRenderingContext2D,
+    frame: number
+  ): void {
+    const twinkle =
+      0.7 +
+      0.3 * Math.sin(frame * this.twinkleSpeed + this.phase);
+
+    context.globalAlpha = this.alpha * twinkle;
+    context.fillStyle = this.colour;
+
+    context.beginPath();
+    context.arc(
+      this.x,
+      this.y,
+      this.size,
+      0,
+      Math.PI * 2
+    );
+    context.fill();
+
+    context.globalAlpha = 1;
+  }
+}
+
+/**
+ * Animated shooting star.
+ */
+class ShootingStar {
+  private readonly lifespan = 90;
+  private framesLeft = this.lifespan;
+
+  constructor(
+    private x: number,
+    private y: number,
+    private readonly speedX: number,
+    private readonly speedY: number,
+    private readonly colour: string
+  ) {}
+
+  get expired(): boolean {
+    return this.framesLeft <= 0;
+  }
+
+  update(context: CanvasRenderingContext2D): void {
+    this.framesLeft--;
+    this.x += this.speedX;
+    this.y += this.speedY;
+
+    this.draw(context);
+  }
+
+  private draw(context: CanvasRenderingContext2D): void {
+    const halfLife = this.lifespan / 2;
+
+    const age = Math.max(
+      0,
+      1 - Math.abs(this.framesLeft - halfLife) / halfLife
+    );
+
+    const lengthModifier = age * age;
+
+    if (lengthModifier < 0.02) {
+      return;
+    }
+
+    const endX = this.x - this.speedX * 22 * lengthModifier;
+    const endY = this.y - this.speedY * 22 * lengthModifier;
+
+    const gradient = context.createLinearGradient(
+      this.x,
+      this.y,
+      endX,
+      endY
+    );
+
+    gradient.addColorStop(0, 'rgba(245, 249, 255, 0.95)');
+    gradient.addColorStop(
+      Math.max(0.02, Math.min(lengthModifier, 0.72)),
+      this.colour
+    );
+    gradient.addColorStop(1, 'rgba(7, 11, 24, 0)');
+
+    context.beginPath();
+    context.moveTo(this.x, this.y);
+    context.lineTo(endX, endY);
+
+    context.strokeStyle = gradient;
+    context.lineWidth = 1.2;
+    context.lineCap = 'round';
+    context.stroke();
+  }
+}
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
+export class AppComponent
+  implements OnInit, AfterViewInit, OnDestroy {
 
-export class AppComponent implements OnInit {
+  @ViewChild('starsCanvas')
+  private starsCanvasRef!: ElementRef<HTMLCanvasElement>;
+
+  @ViewChild('milkyWayCanvas')
+  private milkyWayCanvasRef!: ElementRef<HTMLCanvasElement>;
+
   site?: SiteContent;
   footer?: FooterContent;
   navigation: NavigationItem[] = [];
   navOpen = false;
+
+  private starsContext: CanvasRenderingContext2D | null = null;
+  private milkyWayContext: CanvasRenderingContext2D | null = null;
+
+  private stars: TwinklingStar[] = [];
+  private shootingStars: ShootingStar[] = [];
+
+  private animationFrameId: number | null = null;
+  private frame = 0;
+  private prefersReducedMotion = false;
 
   constructor(
     private readonly contentService: ContentService,
@@ -22,1205 +187,412 @@ export class AppComponent implements OnInit {
     private readonly router: Router
   ) {}
 
-  ngOnInit(): void { 
-      AOS.init({
-        once: true,
-        duration: 650,
-        easing: 'ease-out-cubic'
-      });
-    
-      this.contentService.getContent().subscribe(content => {
-        this.site = content.site;
-        this.footer = content.footer;
-    
-        this.navigation = content.navigation
-          .filter(item => item.visible)
-          .sort((a, b) => a.order - b.order);
-      });
+  ngOnInit(): void {
+    AOS.init({
+      once: true,
+      duration: 450,
+      easing: 'ease-out'
+    });
+
+    this.contentService.getContent().subscribe(content => {
+      this.site = content.site;
+      this.footer = content.footer;
+
+      this.navigation = content.navigation
+        .filter(item => item.visible)
+        .sort((a, b) => a.order - b.order);
+    });
+  }
+
+  /**
+   * Initialise the canvas only after Angular has rendered the HTML.
+   */
+  ngAfterViewInit(): void {
+    this.resizeCanvases();
+
+    this.createStars();
+    this.drawMilkyWay();
+
+    this.prefersReducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
+
+    if (this.prefersReducedMotion) {
+      this.drawStaticStars();
+    } else {
+      this.animate();
     }
- 
+  }
+
+  /**
+   * Keep both canvases sharp on high-resolution screens.
+   * The device pixel ratio is capped to avoid unnecessary GPU work.
+   */
+  private resizeCanvases(): void {
+    const starsCanvas = this.starsCanvasRef?.nativeElement;
+    const milkyWayCanvas = this.milkyWayCanvasRef?.nativeElement;
+
+    if (!starsCanvas || !milkyWayCanvas) {
+      return;
+    }
+
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+
+    starsCanvas.width = Math.floor(width * pixelRatio);
+    starsCanvas.height = Math.floor(height * pixelRatio);
+
+    milkyWayCanvas.width = Math.floor(width * pixelRatio);
+    milkyWayCanvas.height = Math.floor(height * pixelRatio);
+
+    this.starsContext = starsCanvas.getContext('2d');
+    this.milkyWayContext = milkyWayCanvas.getContext('2d');
+
+    this.starsContext?.setTransform(
+      pixelRatio, 0, 0, pixelRatio, 0, 0
+    );
+
+    this.milkyWayContext?.setTransform(
+      pixelRatio, 0, 0, pixelRatio, 0, 0
+    );
+  }
+
+  /**
+   * Create the foreground stars.
+   */
+  private createStars(): void {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    const starCount = width < 768 ? 220 : 420;
+
+    this.stars = Array.from(
+      { length: starCount },
+      () => {
+        const colour =
+          Math.random() < 0.12
+            ? '#E7C3A5'
+            : STAR_COLOURS[
+                Math.floor(Math.random() * (STAR_COLOURS.length - 1))
+              ];
+
+        return new TwinklingStar(
+          Math.random() * width,
+          Math.random() * height,
+          0.35 + Math.random() * 0.8,
+          colour
+        );
+      }
+    );
+
+    this.shootingStars = [];
+    this.frame = 0;
+  }
+
+  /**
+   * Draw the Milky Way on a separate, static canvas.
+   * Keeping it separate means we don't redraw thousands of
+   * background particles on every animation frame.
+   */
+  private drawMilkyWay(): void {
+    const context = this.milkyWayContext;
+
+    if (!context) {
+      return;
+    }
+
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    context.clearRect(0, 0, width, height);
+
+    // A subtle diagonal haze gives the galaxy depth.
+    const band = context.createLinearGradient(
+      0,
+      height * 0.9,
+      width,
+      height * 0.1
+    );
+
+    band.addColorStop(0, 'rgba(12, 21, 43, 0)');
+    band.addColorStop(0.45, 'rgba(30, 48, 83, 0.16)');
+    band.addColorStop(0.6, 'rgba(22, 37, 69, 0.10)');
+    band.addColorStop(1, 'rgba(12, 21, 43, 0)');
+
+    context.fillStyle = band;
+    context.fillRect(0, 0, width, height);
+
+    // Distant background stars.
+    const backgroundStarCount = width < 768 ? 9500 : 18000;
+
+    for (let i = 0; i < backgroundStarCount; i++) {
+      const x = Math.random() * width;
+
+      const y =
+        Math.random() < 0.22
+          ? Math.random() * height
+          : height * 0.5 +
+            (width * 0.5 - x) * 0.23 +
+            (Math.random() - 0.5) * height * 0.75;
+
+      const size = Math.random() * 0.35;
+      const alpha = 0.2 + Math.random() * 0.55;
+
+      context.beginPath();
+      context.arc(x, y, size, 0, Math.PI * 2);
+      context.fillStyle = `rgba(190, 207, 244, ${alpha})`;
+      context.fill();
+    }
+
+    // Galaxy clusters. The colours are deliberately limited to
+    // cool blue and muted violet rather than the original greens
+    // and pinks.
+    const clusterCount = width < 768 ? 28 : 60;
+
+    for (let i = 0; i < clusterCount; i++) {
+      const x = Math.random() * width;
+
+      const y =
+        height * 0.5 +
+        (width * 0.5 - x) * 0.23 +
+        (Math.random() - 0.5) * height * 0.42;
+
+      const horizontalDistance =
+        1 - Math.min(
+          1,
+          Math.abs(x - width * 0.5) / Math.max(width * 0.5, 1)
+        );
+
+      const verticalDistance =
+        1 - Math.min(
+          1,
+          Math.abs(y - height * 0.5) / Math.max(height * 0.5, 1)
+        );
+
+      const brightness = horizontalDistance * verticalDistance;
+      const size = 85 + Math.random() * 115;
+      const hue = 208 + Math.random() * 28;
+
+      this.drawCluster(
+        context,
+        x,
+        y,
+        size,
+        hue,
+        brightness
+      );
+    }
+  }
+
+  /**
+   * Draw one soft cluster of stars.
+   */
+  private drawCluster(
+    context: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    size: number,
+    hue: number,
+    brightness: number
+  ): void {
+    const layers = 7;
+    const starsPerLayer = 34;
+
+    for (let layer = 1; layer < layers; layer++) {
+      const layerRadius = size * layer / layers;
+
+      for (let i = 0; i < starsPerLayer; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const distance = Math.sqrt(Math.random()) * layerRadius;
+
+        const starX = x + Math.cos(angle) * distance;
+        const starY = y + Math.sin(angle) * distance;
+
+        const starSize = 0.06 + Math.random() * 0.18;
+        const alpha =
+          (0.08 + Math.random() * 0.2) *
+          (0.7 + brightness * 0.5);
+
+        const lightness = 55 + Math.random() * 25;
+
+        context.beginPath();
+        context.arc(starX, starY, starSize, 0, Math.PI * 2);
+
+        context.fillStyle =
+          `hsla(${hue}, 58%, ${lightness}%, ${alpha})`;
+
+        context.fill();
+      }
+    }
+
+    // Soft glow around the cluster.
+    const gradient = context.createRadialGradient(
+      x, y, 0,
+      x, y, size
+    );
+
+    gradient.addColorStop(
+      0,
+      `hsla(${hue}, 55%, 48%, ${0.025 + brightness * 0.02})`
+    );
+
+    gradient.addColorStop(
+      0.35,
+      `hsla(${hue}, 62%, 36%, ${0.018 + brightness * 0.01})`
+    );
+
+    gradient.addColorStop(1, 'rgba(7, 11, 24, 0)');
+
+    context.beginPath();
+    context.arc(x, y, size, 0, Math.PI * 2);
+    context.fillStyle = gradient;
+    context.fill();
+  }
+
+  /**
+   * Draw a still version for visitors who prefer reduced motion.
+   */
+  private drawStaticStars(): void {
+    const context = this.starsContext;
+
+    if (!context) {
+      return;
+    }
+
+    context.clearRect(
+      0,
+      0,
+      window.innerWidth,
+      window.innerHeight
+    );
+
+    for (const star of this.stars) {
+      star.draw(context, 0);
+    }
+  }
+
+  /**
+   * Animate the foreground stars and occasional shooting stars.
+   */
+  private animate = (): void => {
+    const context = this.starsContext;
+
+    if (!context) {
+      return;
+    }
+
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    context.clearRect(0, 0, width, height);
+
+    this.frame++;
+
+    for (const star of this.stars) {
+      star.draw(context, this.frame);
+    }
+
+    // Occasional shooting star, using restrained blue/champagne colours.
+    if (Math.random() < 0.0018) {
+      const x = Math.random() * width;
+      const y = Math.random() * height * 0.4;
+
+      const speedX = (Math.random() - 0.5) * 3;
+      const speedY = 1.1 + Math.random() * 1.6;
+
+      const colour =
+        SHOOTING_STAR_COLOURS[
+          Math.floor(Math.random() * SHOOTING_STAR_COLOURS.length)
+        ];
+
+      this.shootingStars.push(
+        new ShootingStar(x, y, speedX, speedY, colour)
+      );
+    }
+
+    for (let i = this.shootingStars.length - 1; i >= 0; i--) {
+      const shootingStar = this.shootingStars[i];
+
+      if (shootingStar.expired) {
+        this.shootingStars.splice(i, 1);
+        continue;
+      }
+
+      shootingStar.update(context);
+    }
+
+    this.animationFrameId = requestAnimationFrame(this.animate);
+  };
+
+  /**
+   * Redraw the canvases when the browser is resized or rotated.
+   */
+  @HostListener('window:resize')
+  onResize(): void {
+    if (!this.starsCanvasRef || !this.milkyWayCanvasRef) {
+      return;
+    }
+
+    this.resizeCanvases();
+    this.createStars();
+    this.drawMilkyWay();
+
+    if (this.prefersReducedMotion) {
+      this.drawStaticStars();
+    }
+  }
+
+  /**
+   * Stop the animation when Angular destroys the component.
+   */
+  ngOnDestroy(): void {
+    if (this.animationFrameId !== null) {
+      cancelAnimationFrame(this.animationFrameId);
+    }
+  }
+
+  navigateToItem(item: NavigationItem): void {
+    this.navOpen = false;
+
+    if (item.id === 'blog') {
+      void this.router.navigateByUrl('/blog');
+      return;
+    }
+
+    this.navigateToSection(item.sectionId);
+  }
+
+  navigateToSection(sectionId: string): void {
+    this.navOpen = false;
+
+    if (this.router.url !== '/') {
+      void this.router.navigateByUrl('/').then(() => {
+        setTimeout(() => this.scrollIntoView(sectionId), 0);
+      });
+
+      return;
+    }
+
+    this.scrollIntoView(sectionId);
+  }
+
   scrollIntoView(sectionId: string): void {
-    document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.getElementById(sectionId)?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+
     this.navOpen = false;
   }
 
   downloadCV(): void {
     if (this.site?.resumeUrl) {
-      window.open(this.site.resumeUrl, '_blank', 'noopener,noreferrer');
+      window.open(
+        this.site.resumeUrl,
+        '_blank',
+        'noopener,noreferrer'
+      );
     }
-  }
-
-  navigateToItem(item: { id: string; sectionId: string }): void {
-    this.navOpen = false;
-  
-    // Blog is a real page, not a homepage section.
-    if (item.id === 'blog') {
-      void this.router.navigateByUrl('/blog');
-      return;
-    }
-  
-    this.navigateToSection(item.sectionId);
-  }
-  
-  navigateToSection(sectionId: string): void {
-    this.navOpen = false;
-  
-    // If we're on a blog page, return home before scrolling.
-    if (this.router.url !== '/') {
-      void this.router.navigateByUrl('/').then(() => {
-        setTimeout(() => this.scrollIntoView(sectionId), 0);
-      });
-      return;
-    }
-  
-    this.scrollIntoView(sectionId);
   }
 }
-
-(() => {
-
-  if (typeof window === 'undefined' || typeof document === 'undefined') {
-    return;
-  }
-
-  /*
-   * Prevent duplicate canvases/listeners during Angular hot reload.
-   */
-  const existingCleanup = (window as any).__portfolioGalaxyCleanup;
-
-  if (typeof existingCleanup === 'function') {
-    existingCleanup();
-  }
-
-
-  const COLORS = {
-
-    // Main background
-    background: '#090D16',
-
-    // Very subtle deep-blue atmospheric tones
-    deepBlue: '#111827',
-    blueGlow: '#25344A',
-
-    // Nude / champagne tones
-    champagne: '#E7C3A5',
-    rose: '#C99D98',
-
-    // Star colours
-    ivory: '#FFF9F4',
-    warmWhite: '#F2E7DC',
-    coolWhite: '#DCE6F2'
-
-  };
-
-  const canvas = document.createElement('canvas');
-
-  canvas.id = 'procedural-milky-way';
-
-  Object.assign(canvas.style, {
-    position: 'fixed',
-    inset: '0',
-    width: '100vw',
-    height: '100vh',
-    pointerEvents: 'none',
-    zIndex: '0'
-  });
-
-  document.body.prepend(canvas);
-
-  const appRoot =
-    document.querySelector('app-root') as HTMLElement | null;
-
-  if (appRoot) {
-
-    appRoot.style.position = 'relative';
-
-    appRoot.style.zIndex = '1';
-
-    appRoot.style.background = 'transparent';
-
-  }
-
-
-  document.documentElement.style.background =
-    COLORS.background;
-
-  document.body.style.background =
-    COLORS.background;
-
-
-  const context = canvas.getContext('2d', {
-    alpha: false
-  });
-  
-  if (context === null) {
-    canvas.remove();
-    return;
-  }
-  
-  const ctx: CanvasRenderingContext2D = context;
-
-  let width = window.innerWidth;
-  let height = window.innerHeight;
-
-  let dpr = Math.min(
-    window.devicePixelRatio || 1,
-    1.5
-  );
-  let targetX = 0;
-  let targetY = 0;
-
-  let mouseX = 0;
-  let mouseY = 0;
-
-
-  let frameId = 0;
-
-  let resizeTimer: ReturnType<typeof setTimeout>;
-
-
-  const prefersReducedMotion =
-    window.matchMedia(
-      '(prefers-reduced-motion: reduce)'
-    ).matches;
-
-  const hasPointer =
-    window.matchMedia(
-      '(hover: hover) and (pointer: fine)'
-    ).matches;
-
-  function randomFactory(seed: number) {
-
-    let value = seed;
-
-    return () => {
-
-      value += 0x6D2B79F5;
-
-      let t = value;
-
-      t = Math.imul(
-        t ^ (t >>> 15),
-        t | 1
-      );
-
-      t ^= t +
-        Math.imul(
-          t ^ (t >>> 7),
-          t | 61
-        );
-
-      return (
-        (t ^ (t >>> 14)) >>> 0
-      ) / 4294967296;
-
-    };
-
-  }
-
-
-  const random =
-    randomFactory(20261011);
-
-
-  function randomBetween(
-    min: number,
-    max: number
-  ): number {
-
-    return min +
-      random() * (max - min);
-
-  }
-
-  let farStars =
-    document.createElement('canvas');
-
-  let nearStars =
-    document.createElement('canvas');
-
-  let galaxy =
-    document.createElement('canvas');
-
-
-  function prepareLayer(
-    layer: HTMLCanvasElement
-  ): CanvasRenderingContext2D {
-
-    layer.width = width * dpr;
-    layer.height = height * dpr;
-
-    const layerContext =
-      layer.getContext('2d')!;
-
-    layerContext.setTransform(
-      dpr,
-      0,
-      0,
-      dpr,
-      0,
-      0
-    );
-
-    return layerContext;
-
-  }
-  function createStarField(
-    context: CanvasRenderingContext2D,
-    count: number,
-    minimumSize: number,
-    maximumSize: number,
-    maximumOpacity: number
-  ): void {
-
-    const colours = [
-      COLORS.ivory,
-      COLORS.warmWhite,
-      COLORS.coolWhite,
-      COLORS.champagne
-    ];
-
-
-    for (
-      let i = 0;
-      i < count;
-      i++
-    ) {
-
-      const x =
-        randomBetween(0, width);
-
-      const y =
-        randomBetween(0, height);
-
-
-      const radius =
-        minimumSize +
-        Math.pow(random(), 3) *
-        (maximumSize - minimumSize);
-
-
-      const opacity =
-        randomBetween(
-          0.12,
-          maximumOpacity
-        );
-
-
-      const colour =
-        colours[
-          Math.floor(
-            random() * colours.length
-          )
-        ];
-
-
-      context.beginPath();
-
-      context.globalAlpha =
-        opacity;
-
-      context.fillStyle =
-        colour;
-
-      context.arc(
-        x,
-        y,
-        radius,
-        0,
-        Math.PI * 2
-      );
-
-      context.fill();
-
-      if (
-        radius > 1 &&
-        random() > 0.965
-      ) {
-
-        const gradient =
-          context.createRadialGradient(
-            x,
-            y,
-            0,
-            x,
-            y,
-            radius * 5
-          );
-
-        gradient.addColorStop(
-          0,
-          'rgba(255,249,244,.30)'
-        );
-
-        gradient.addColorStop(
-          1,
-          'rgba(255,249,244,0)'
-        );
-
-
-        context.globalAlpha = 1;
-
-        context.fillStyle =
-          gradient;
-
-        context.beginPath();
-
-        context.arc(
-          x,
-          y,
-          radius * 5,
-          0,
-          Math.PI * 2
-        );
-
-        context.fill();
-
-      }
-
-    }
-
-
-    context.globalAlpha = 1;
-
-  }
-
-
-  function createMilkyWay(
-    context: CanvasRenderingContext2D
-  ): void {
-
-    const centerX =
-      width * 0.48;
-
-    const centerY =
-      height * 0.40;
-
-
-    /*
-     * Angle of the galaxy.
-     */
-    const angle =
-      -0.42;
-
-
-    const cos =
-      Math.cos(angle);
-
-    const sin =
-      Math.sin(angle);
-
-
-    /*
-     * Atmospheric broad glow.
-     */
-
-    const atmosphericGradient =
-      context.createRadialGradient(
-        centerX,
-        centerY,
-        0,
-        centerX,
-        centerY,
-        Math.max(width, height) * 0.75
-      );
-
-
-    atmosphericGradient.addColorStop(
-      0,
-      'rgba(231,195,165,.045)'
-    );
-
-    atmosphericGradient.addColorStop(
-      0.35,
-      'rgba(201,157,152,.025)'
-    );
-
-    atmosphericGradient.addColorStop(
-      1,
-      'rgba(9,13,22,0)'
-    );
-
-
-    context.fillStyle =
-      atmosphericGradient;
-
-    context.fillRect(
-      0,
-      0,
-      width,
-      height
-    );
-
-    const dustCount =
-      Math.min(
-        4200,
-        Math.floor(
-          width * height / 280
-        )
-      );
-
-
-    for (
-      let i = 0;
-      i < dustCount;
-      i++
-    ) {
-
-      /*
-       * Position along galaxy axis.
-       */
-
-      const along =
-        randomBetween(
-          -width * 0.85,
-          width * 0.85
-        );
-
-      const spreadRandom =
-        (
-          random() +
-          random() +
-          random() +
-          random()
-        ) / 4;
-
-
-      const spread =
-        (
-          spreadRandom - 0.5
-        ) *
-        Math.min(
-          width,
-          height
-        ) *
-        0.52;
-
-      const x =
-        centerX +
-        along * cos -
-        spread * sin;
-
-      const y =
-        centerY +
-        along * sin +
-        spread * cos;
-
-
-      const distanceFromCore =
-        Math.abs(spread);
-
-
-      const maxSpread =
-        Math.min(
-          width,
-          height
-        ) * 0.27;
-
-
-      const density =
-        Math.max(
-          0,
-          1 -
-          distanceFromCore /
-          maxSpread
-        );
-
-
-      if (
-        density <= 0 ||
-        random() > density * 1.25
-      ) {
-        continue;
-      }
-
-
-      const radius =
-        randomBetween(
-          8,
-          45
-        );
-
-
-      const alpha =
-        randomBetween(
-          0.004,
-          0.022
-        ) *
-        density;
-
-
-      const colours = [
-        `rgba(255,249,244,${alpha})`,
-        `rgba(231,195,165,${alpha})`,
-        `rgba(201,157,152,${alpha * 0.75})`,
-        `rgba(190,205,222,${alpha * 0.65})`
-      ];
-
-
-      context.fillStyle =
-        colours[
-          Math.floor(
-            random() * colours.length
-          )
-        ];
-
-
-      context.beginPath();
-
-      context.ellipse(
-        x,
-        y,
-        radius * randomBetween(
-          1.4,
-          3
-        ),
-        radius,
-        angle,
-        0,
-        Math.PI * 2
-      );
-
-      context.fill();
-
-    }
-
-    const coreGradient =
-      context.createRadialGradient(
-        centerX,
-        centerY,
-        0,
-        centerX,
-        centerY,
-        Math.min(width, height) * 0.33
-      );
-
-
-    coreGradient.addColorStop(
-      0,
-      'rgba(255,239,220,.14)'
-    );
-
-    coreGradient.addColorStop(
-      0.18,
-      'rgba(231,195,165,.07)'
-    );
-
-    coreGradient.addColorStop(
-      0.45,
-      'rgba(201,157,152,.035)'
-    );
-
-    coreGradient.addColorStop(
-      1,
-      'rgba(9,13,22,0)'
-    );
-
-
-    context.fillStyle =
-      coreGradient;
-
-    context.fillRect(
-      0,
-      0,
-      width,
-      height
-    );
-
-
-    context.globalCompositeOperation =
-      'destination-out';
-
-
-    for (
-      let i = 0;
-      i < 180;
-      i++
-    ) {
-
-      const along =
-        randomBetween(
-          -width * 0.55,
-          width * 0.55
-        );
-
-
-      const spread =
-        randomBetween(
-          -height * 0.055,
-          height * 0.055
-        );
-
-
-      const x =
-        centerX +
-        along * cos -
-        spread * sin;
-
-      const y =
-        centerY +
-        along * sin +
-        spread * cos;
-
-
-      const size =
-        randomBetween(
-          18,
-          85
-        );
-
-
-      context.globalAlpha =
-        randomBetween(
-          0.025,
-          0.08
-        );
-
-
-      context.fillStyle =
-        '#000';
-
-
-      context.beginPath();
-
-      context.ellipse(
-        x,
-        y,
-        size * randomBetween(
-          1.5,
-          4
-        ),
-        size,
-        angle,
-        0,
-        Math.PI * 2
-      );
-
-      context.fill();
-
-    }
-
-
-    context.globalCompositeOperation =
-      'source-over';
-
-    context.globalAlpha = 1;
-
-    for (
-      let i = 0;
-      i < 1100;
-      i++
-    ) {
-
-      const along =
-        randomBetween(
-          -width * 0.72,
-          width * 0.72
-        );
-
-
-      const spread =
-        (
-          (
-            random() +
-            random() +
-            random()
-          ) / 3 -
-          0.5
-        ) *
-        height *
-        0.30;
-
-
-      const x =
-        centerX +
-        along * cos -
-        spread * sin;
-
-      const y =
-        centerY +
-        along * sin +
-        spread * cos;
-
-
-      if (
-        x < 0 ||
-        x > width ||
-        y < 0 ||
-        y > height
-      ) {
-        continue;
-      }
-
-
-      const radius =
-        randomBetween(
-          0.25,
-          1.15
-        );
-
-
-      context.globalAlpha =
-        randomBetween(
-          0.12,
-          0.65
-        );
-
-
-      context.fillStyle =
-        random() > 0.82
-          ? COLORS.champagne
-          : COLORS.ivory;
-
-
-      context.beginPath();
-
-      context.arc(
-        x,
-        y,
-        radius,
-        0,
-        Math.PI * 2
-      );
-
-      context.fill();
-
-    }
-
-
-    context.globalAlpha = 1;
-
-  }
-
-
-  function buildLayers(): void {
-
-    farStars =
-      document.createElement('canvas');
-
-    nearStars =
-      document.createElement('canvas');
-
-    galaxy =
-      document.createElement('canvas');
-
-
-    const farContext =
-      prepareLayer(farStars);
-
-    const nearContext =
-      prepareLayer(nearStars);
-
-    const galaxyContext =
-      prepareLayer(galaxy);
-
-
-    /*
-     * Thousands of tiny stars.
-     */
-    createStarField(
-      farContext,
-      Math.floor(
-        width * height / 1800
-      ),
-      0.15,
-      0.8,
-      0.42
-    );
-
-
-    createStarField(
-      nearContext,
-      Math.floor(
-        width * height / 8500
-      ),
-      0.4,
-      1.7,
-      0.72
-    );
-
-
-    createMilkyWay(
-      galaxyContext
-    );
-
-  }
-
-  function resize(): void {
-
-    width =
-      window.innerWidth;
-
-    height =
-      window.innerHeight;
-
-
-    dpr =
-      Math.min(
-        window.devicePixelRatio || 1,
-        1.5
-      );
-
-
-    canvas.width =
-      width * dpr;
-
-    canvas.height =
-      height * dpr;
-
-
-    canvas.style.width =
-      `${width}px`;
-
-    canvas.style.height =
-      `${height}px`;
-
-
-    ctx.setTransform(
-      dpr,
-      0,
-      0,
-      dpr,
-      0,
-      0
-    );
-
-
-    buildLayers();
-
-  }
-
-
-  function handlePointerMove(
-    event: PointerEvent
-  ): void {
-
-    if (!hasPointer) {
-      return;
-    }
-
-
-    targetX =
-      (
-        event.clientX /
-        width -
-        0.5
-      ) * 2;
-
-
-    targetY =
-      (
-        event.clientY /
-        height -
-        0.5
-      ) * 2;
-
-  }
-
-
-  function handlePointerLeave(): void {
-
-    targetX = 0;
-    targetY = 0;
-
-  }
-
-
-  function drawBackground(): void {
-
-    ctx.fillStyle =
-      COLORS.background;
-
-    ctx.fillRect(
-      0,
-      0,
-      width,
-      height
-    );
-
-
-    /*
-     * Deep-blue atmospheric bloom.
-     */
-    const gradient =
-      ctx.createRadialGradient(
-        width * 0.65,
-        height * 0.15,
-        0,
-        width * 0.65,
-        height * 0.15,
-        Math.max(
-          width,
-          height
-        ) * 0.85
-      );
-
-
-    gradient.addColorStop(
-      0,
-      'rgba(37,52,74,.16)'
-    );
-
-    gradient.addColorStop(
-      0.45,
-      'rgba(17,24,39,.08)'
-    );
-
-    gradient.addColorStop(
-      1,
-      'rgba(9,13,22,0)'
-    );
-
-
-    ctx.fillStyle =
-      gradient;
-
-    ctx.fillRect(
-      0,
-      0,
-      width,
-      height
-    );
-
-  }
-
-
-  function drawLayer(
-    layer: HTMLCanvasElement,
-    offsetX: number,
-    offsetY: number,
-    opacity: number
-  ): void {
-
-    ctx.save();
-
-    ctx.globalAlpha =
-      opacity;
-
-    ctx.drawImage(
-      layer,
-      offsetX - 18,
-      offsetY - 18,
-      width + 36,
-      height + 36
-    );
-
-
-    ctx.restore();
-
-  }
-
-
-  function render(
-    time = 0
-  ): void {
-
-
-    mouseX +=
-      (
-        targetX -
-        mouseX
-      ) * 0.035;
-
-
-    mouseY +=
-      (
-        targetY -
-        mouseY
-      ) * 0.035;
-
-
-    drawBackground();
-
-
-    /*
-     * Extremely slow natural drift.
-     */
-    const driftX =
-      Math.sin(
-        time * 0.00004
-      ) * 2;
-
-    const driftY =
-      Math.cos(
-        time * 0.000035
-      ) * 1.5;
-
-
-    /*
-     * FAR STARS
-     */
-    drawLayer(
-      farStars,
-      mouseX * -2 + driftX,
-      mouseY * -2 + driftY,
-      0.72
-    );
-
-
-    /*
-     * MILKY WAY
-     */
-    drawLayer(
-      galaxy,
-      mouseX * -7 + driftX,
-      mouseY * -5 + driftY,
-      0.88
-    );
-
-
-    /*
-     * NEAR STARS
-     */
-    drawLayer(
-      nearStars,
-      mouseX * -13,
-      mouseY * -9,
-      0.82
-    );
-
-    const vignette =
-      ctx.createRadialGradient(
-        width / 2,
-        height / 2,
-        Math.min(
-          width,
-          height
-        ) * 0.18,
-        width / 2,
-        height / 2,
-        Math.max(
-          width,
-          height
-        ) * 0.72
-      );
-
-
-    vignette.addColorStop(
-      0,
-      'rgba(9,13,22,0)'
-    );
-
-    vignette.addColorStop(
-      0.68,
-      'rgba(9,13,22,.10)'
-    );
-
-    vignette.addColorStop(
-      1,
-      'rgba(9,13,22,.58)'
-    );
-
-
-    ctx.fillStyle =
-      vignette;
-
-    ctx.fillRect(
-      0,
-      0,
-      width,
-      height
-    );
-
-
-    if (!prefersReducedMotion) {
-
-      frameId =
-        requestAnimationFrame(
-          render
-        );
-
-    }
-
-  }
-
-
-  function handleResize(): void {
-
-    clearTimeout(
-      resizeTimer
-    );
-
-
-    resizeTimer =
-      setTimeout(
-        () => {
-
-          resize();
-
-          if (prefersReducedMotion) {
-            render();
-          }
-
-        },
-        150
-      );
-
-  }
-
-
-  window.addEventListener(
-    'pointermove',
-    handlePointerMove,
-    {
-      passive: true
-    }
-  );
-
-
-  document.addEventListener(
-    'pointerleave',
-    handlePointerLeave
-  );
-
-
-  window.addEventListener(
-    'resize',
-    handleResize,
-    {
-      passive: true
-    }
-  );
-
-
-  resize();
-
-  render();
-
-
-  (window as any).__portfolioGalaxyCleanup =
-    () => {
-
-      cancelAnimationFrame(
-        frameId
-      );
-
-      clearTimeout(
-        resizeTimer
-      );
-
-
-      window.removeEventListener(
-        'pointermove',
-        handlePointerMove
-      );
-
-
-      document.removeEventListener(
-        'pointerleave',
-        handlePointerLeave
-      );
-
-
-      window.removeEventListener(
-        'resize',
-        handleResize
-      );
-
-
-      canvas.remove();
-
-    };
-
-})();
-

@@ -1,10 +1,22 @@
+
+<div class="ambient-background" aria-hidden="true">
+  <canvas #milkyWayCanvas class="milky-way-canvas"></canvas>
+  <canvas #starsCanvas class="stars-canvas"></canvas>
+</div>
+
 <header class="main-navbar">
   <button
     type="button"
     class="brand"
     (click)="navigateToSection('home')"
-    aria-label="Go to top">
-    <img [src]="site?.logo" [alt]="site?.name" width="40" height="40">
+    aria-label="Go to top"
+  >
+    <img
+      [src]="site?.logo"
+      [alt]="site?.name"
+      width="40"
+      height="40"
+    >
   </button>
 
   <button
@@ -12,18 +24,18 @@
     class="menu-toggle"
     (click)="navOpen = !navOpen"
     [attr.aria-expanded]="navOpen"
-    aria-label="Toggle navigation">
+    aria-label="Toggle navigation"
+  >
     ☰
   </button>
- 
-  
-  <!-- existing navbar / page -->
+
   <nav [class.open]="navOpen" aria-label="Main navigation">
     <button
       *ngFor="let item of navigation"
       type="button"
       class="nav-link"
-      (click)="navigateToItem(item)">
+      (click)="navigateToItem(item)"
+    >
       {{ item.label }}
     </button>
 
@@ -32,8 +44,17 @@
     </button>
   </nav>
 </header>
+
 <router-outlet></router-outlet>
+
 <footer class="site-footer" *ngIf="footer as f">
-  <a [href]="f.repositoryUrl" target="_blank" rel="noopener noreferrer">{{ f.text }}</a>
+  <a
+    [href]="f.repositoryUrl"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    {{ f.text }}
+  </a>
+
   <span>{{ f.designCredit }}</span>
 </footer>

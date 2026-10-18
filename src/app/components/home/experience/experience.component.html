@@ -2,71 +2,109 @@
   <div class="container-fluid section-box">
 
     <div class="section-heading-row">
-      <h3 class="section-title">
-        <span class="n-section-title">02. {{ title }}</span>
-      </h3>
+      <h2 class="section-title">{{ title }}</h2>
 
       <div class="scroll-controls" aria-label="Experience navigation">
-        <button type="button" (click)="scroll(-1)" aria-label="Previous experience">←</button>
-        <button type="button" (click)="scroll(1)" aria-label="Next experience">→</button>
+        <button
+          type="button"
+          (click)="scroll(-1)"
+          [disabled]="!canScroll(-1)"
+          aria-label="Previous experiences">
+          ←
+        </button>
+
+        <button
+          type="button"
+          (click)="scroll(1)"
+          [disabled]="!canScroll(1)"
+          aria-label="Next experiences">
+          →
+        </button>
       </div>
     </div>
 
     <div
+      #rail
       class="content-rail"
-      #experienceTrack
-      tabindex="0"
-      aria-label="Professional experience"
-    >
+      (scroll)="updateActiveCards()">
+
       <article
-        class="content-card"
-        *ngFor="let item of experience; let i = index"
-      >
+        class="timeline-item"
+        *ngFor="let item of experience; let i = index; trackBy: trackByExperience"
+        [class.is-active]="isCardInFocus(i)">
 
-        <div class="card-header">
-          <span class="card-index">
-            {{ (i + 1).toString().padStart(2, '0') }}
-          </span>
+        <!-- Timeline marker -->
+        <div class="timeline-marker-row">
+          <span class="timeline-marker" aria-hidden="true"></span>
+        </div>
 
-          <span class="card-date">
+        <!-- Role, company and dates -->
+        <header class="timeline-heading">
+          <h3>{{ item.role }}</h3>
+
+          <p class="timeline-company">
+            {{ item.company }}
+          </p>
+
+          <p class="timeline-dates">
             {{ item.dateLabel }}
-          </span>
+          </p>
+        </header>
+
+        <!-- Experience details -->
+        <div
+          class="experience-detail-box"
+          [class.is-expanded]="expandedExperience.has(i)">
+
+          <!-- Skills are ALWAYS visible at the top -->
+          <div
+            class="experience-chips"
+            *ngIf="item.technologies?.length"
+            aria-label="Technologies used">
+
+            <span *ngFor="let technology of item.technologies">
+              {{ technology }}
+            </span>
+          </div>
+
+          <!-- Always show the full summary -->
+          <p class="experience-summary">
+            {{ item.summary }}
+          </p>
+
+          <!-- Achievement bullets appear only after See more -->
+          <div
+            class="experience-extra"
+            *ngIf="expandedExperience.has(i)"
+            [id]="'experience-extra-' + i">
+
+            <ul *ngIf="item.highlights?.length">
+              <li *ngFor="let highlight of item.highlights">
+                {{ highlight }}
+              </li>
+            </ul>
+
+          </div>
+
+          <!-- Expand/collapse achievements -->
+          <button
+            *ngIf="item.highlights?.length"
+            type="button"
+            class="see-more"
+            [attr.aria-expanded]="expandedExperience.has(i)"
+            [attr.aria-controls]="'experience-extra-' + i"
+            (click)="toggleExpanded(i)">
+
+            {{ expandedExperience.has(i) ? 'See less ↑' : 'See more ↓' }}
+          </button>
+
         </div>
-
-        <h4>{{ item.role }}</h4>
-
-        <a
-          *ngIf="item.companyUrl; else companyText"
-          [href]="item.companyUrl"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="company"
-        >
-          {{ item.company }} ↗
-        </a>
-
-        <ng-template #companyText>
-          <span class="company">{{ item.company }}</span>
-        </ng-template>
-
-        <p class="summary">
-          {{ item.summary }}
-        </p>
-
-        <ul class="highlights">
-          <li *ngFor="let highlight of item.highlights | slice:0:5">
-            {{ highlight }}
-          </li>
-        </ul>
-
-        <div class="chips">
-          <span *ngFor="let tech of item.technologies | slice:0:6">
-            {{ tech }}
-          </span>
-        </div>
-
       </article>
-    </div>
 
+      <p class="empty-state" *ngIf="experience.length === 0">
+        Experience details are currently unavailable.
+      </p>
+
+    </div>
   </div>
 </section>
