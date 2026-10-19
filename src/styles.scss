@@ -25,17 +25,9 @@ app-root {
   z-index: -1;
   overflow: hidden;
   pointer-events: none;
-
-  background:
-    radial-gradient(
-      ellipse at 50% 45%,
-      rgba(17, 31, 58, 0.45),
-      transparent 65%
-    ),
-    #070B18;
+  background: $Navy;
 }
 
-/* Both canvases fill the viewport */
 .ambient-background canvas {
   position: absolute;
   inset: 0;
@@ -50,7 +42,7 @@ app-root {
 }
 
 .stars-canvas {
-  opacity: 0.95;
+  opacity: 1;
 }
 
 /* Respect visitors who prefer less motion */

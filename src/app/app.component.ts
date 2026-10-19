@@ -55,7 +55,7 @@ class TwinklingStar {
   ) {
     this.alpha = 0.25 + Math.random() * 0.65;
     this.phase = Math.random() * Math.PI * 2;
-    this.twinkleSpeed = 0.015 + Math.random() * 0.035;
+    this.twinkleSpeed = 0.018 + Math.random() * 0.04;
   }
 
   draw(
@@ -63,8 +63,8 @@ class TwinklingStar {
     frame: number
   ): void {
     const twinkle =
-      0.7 +
-      0.3 * Math.sin(frame * this.twinkleSpeed + this.phase);
+  0.65 +
+  0.35 * Math.sin(frame * this.twinkleSpeed + this.phase);
 
     context.globalAlpha = this.alpha * twinkle;
     context.fillStyle = this.colour;
@@ -87,16 +87,18 @@ class TwinklingStar {
  * Animated shooting star.
  */
 class ShootingStar {
-  private readonly lifespan = 90;
-  private framesLeft = this.lifespan;
+  private framesLeft: number;
 
   constructor(
     private x: number,
     private y: number,
     private readonly speedX: number,
     private readonly speedY: number,
-    private readonly colour: string
-  ) {}
+    private readonly colour: string,
+    private readonly lifespan = 90
+  ) {
+    this.framesLeft = lifespan;
+  }
 
   get expired(): boolean {
     return this.framesLeft <= 0;
@@ -265,7 +267,7 @@ export class AppComponent
     const width = window.innerWidth;
     const height = window.innerHeight;
 
-    const starCount = width < 768 ? 220 : 420;
+    const starCount = width < 768 ? 240 : 460;
 
     this.stars = Array.from(
       { length: starCount },
@@ -324,7 +326,7 @@ export class AppComponent
     context.fillRect(0, 0, width, height);
 
     // Distant background stars.
-    const backgroundStarCount = width < 768 ? 9500 : 18000;
+    const backgroundStarCount = width < 768 ? 10500 : 20000;
 
     for (let i = 0; i < backgroundStarCount; i++) {
       const x = Math.random() * width;
@@ -348,7 +350,7 @@ export class AppComponent
     // Galaxy clusters. The colours are deliberately limited to
     // cool blue and muted violet rather than the original greens
     // and pinks.
-    const clusterCount = width < 768 ? 28 : 60;
+    const clusterCount = width < 768 ? 32 : 66;
 
     for (let i = 0; i < clusterCount; i++) {
       const x = Math.random() * width;
@@ -493,13 +495,26 @@ export class AppComponent
       star.draw(context, this.frame);
     }
 
-    // Occasional shooting star, using restrained blue/champagne colours.
-    if (Math.random() < 0.0018) {
-      const x = Math.random() * width;
-      const y = Math.random() * height * 0.4;
+    // Occasional shooting star, travelling diagonally from top to bottom.
+    if (Math.random() < 0.0020) {
+      const speedY = 2.2 + Math.random() * 0.6;
+      const lifespan = Math.ceil((height + 30) / speedY);
 
-      const speedX = (Math.random() - 0.5) * 3;
-      const speedY = 1.1 + Math.random() * 1.6;
+      // Choose a diagonal direction and keep the trail on screen.
+      const direction = Math.random() < 0.5 ? 1 : -1;
+      const desiredSpeedX = speedY * (0.22 + Math.random() * 0.1);
+      const speedX =
+        direction *
+        Math.min(desiredSpeedX, (width * 0.65) / lifespan);
+
+      const horizontalTravel = Math.abs(speedX) * lifespan;
+      const availableWidth = Math.max(0, width - horizontalTravel);
+
+      const x = direction > 0
+        ? Math.random() * availableWidth
+        : horizontalTravel + Math.random() * availableWidth;
+
+      const y = -10;
 
       const colour =
         SHOOTING_STAR_COLOURS[
@@ -507,7 +522,7 @@ export class AppComponent
         ];
 
       this.shootingStars.push(
-        new ShootingStar(x, y, speedX, speedY, colour)
+        new ShootingStar(x, y, speedX, speedY, colour, lifespan)
       );
     }
 
